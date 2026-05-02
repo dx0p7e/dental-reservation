@@ -27,3 +27,5 @@ yarn-error.log
 /.vscode
 /.zed
 /openspec
+THESIS_CONTEXT.md
+/stubs
