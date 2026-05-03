@@ -3,6 +3,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import api from '@spa/api/axios'
+import { useAuthStore } from '@spa/stores/auth'
 import { useBookingStore } from '@spa/stores/booking'
 import AppNavbar from '@spa/components/AppNavbar.vue'
 import PageHeader from '@spa/components/PageHeader.vue'
@@ -11,7 +12,10 @@ import type { Doctor, Slot, Service } from '@spa/types'
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
+const authStore = useAuthStore()
 const bookingStore = useBookingStore()
+
+const hasBanner = computed(() => authStore.isAuthenticated && bookingStore.bookingDraftState !== null)
 
 const doctorId = route.params.id as string
 const slots = ref<Slot[]>([])
@@ -105,7 +109,7 @@ const groupedSlots = computed(() => {
 
       <div class="grid grid-cols-[16rem_1fr] gap-8 lg:grid-cols-[16rem_1fr_16rem]">
         <!-- Left sidebar -->
-        <aside class="sticky top-20 self-start">
+        <aside :class="['sticky', hasBanner ? 'top-[116px]' : 'top-20', 'self-start']">
           <!-- Service select -->
           <div class="mb-4">
             <label class="mb-1.5 block text-sm font-medium text-clinic-text">{{ t('booking.service') }}</label>
@@ -209,7 +213,7 @@ const groupedSlots = computed(() => {
         </div>
 
         <!-- Right: sticky continue panel (large screens only) -->
-        <aside class="sticky top-20 hidden self-start lg:block">
+        <aside :class="['sticky', hasBanner ? 'top-[116px]' : 'top-20', 'hidden', 'self-start', 'lg:block']">
           <button
             @click="confirmBooking"
             :disabled="!canConfirm()"

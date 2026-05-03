@@ -90,6 +90,7 @@ class DoctorScheduleResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('day_of_week')
                     ->label(__('filament.fields.day_of_week'))
@@ -137,9 +138,9 @@ class DoctorScheduleResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => ListDoctorSchedules::route('/'),
+            'index' => ListDoctorSchedules::route('/'),
             'create' => CreateDoctorSchedule::route('/create'),
-            'edit'   => EditDoctorSchedule::route('/{record}/edit'),
+            'edit' => EditDoctorSchedule::route('/{record}/edit'),
         ];
     }
 }

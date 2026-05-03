@@ -14,9 +14,9 @@ use Carbon\Carbon;
 use Filament\Actions\Testing\TestAction;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Mail;
+use Laravel\Sanctum\Sanctum;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
-use Laravel\Sanctum\Sanctum;
 
 beforeEach(function (): void {
     Role::firstOrCreate(['name' => 'patient', 'guard_name' => 'web']);
@@ -40,9 +40,9 @@ test('slot-based booking stores correct discount_pct and final_price for non-zer
     Sanctum::actingAs($patient);
 
     $this->postJson('/api/v1/appointments', [
-        'doctor_id'  => $doctor->id,
+        'doctor_id' => $doctor->id,
         'service_id' => $service->id,
-        'slot_id'    => $slot->id,
+        'slot_id' => $slot->id,
     ])->assertCreated();
 
     $appointment = Appointment::where('patient_id', $patient->id)->first();
@@ -67,9 +67,9 @@ test('slot-based booking with standard tier stores discount_pct 0 and final_pric
     Sanctum::actingAs($patient);
 
     $this->postJson('/api/v1/appointments', [
-        'doctor_id'  => $doctor->id,
+        'doctor_id' => $doctor->id,
         'service_id' => $service->id,
-        'slot_id'    => $slot->id,
+        'slot_id' => $slot->id,
     ])->assertCreated();
 
     $appointment = Appointment::where('patient_id', $patient->id)->first();
@@ -89,7 +89,7 @@ test('request-based booking stores discount_pct 0 and null final_price', functio
     $service = Service::factory()->create();
 
     $this->postJson('/api/v1/appointments/request', [
-        'service_id'     => $service->id,
+        'service_id' => $service->id,
         'preferred_date' => now()->addDays(3)->toDateString(),
     ])->assertCreated();
 
@@ -108,9 +108,9 @@ test('appointment resource response includes discount_pct and final_price keys',
     Sanctum::actingAs($patient);
 
     $appointment = Appointment::factory()->create([
-        'patient_id'  => $patient->id,
+        'patient_id' => $patient->id,
         'discount_pct' => 5.00,
-        'final_price'  => 95.00,
+        'final_price' => 95.00,
     ]);
 
     $this->getJson('/api/v1/appointments')
@@ -155,7 +155,7 @@ test('slot generation action sends warning notification when no slots are create
     $this->actingAs($admin);
 
     // schedule for a day_of_week that doesn't match today → 1-day window produces 0 slots
-    $notTodayIso = \Carbon\Carbon::now()->addDay()->isoWeekday();
+    $notTodayIso = Carbon::now()->addDay()->isoWeekday();
     $schedule = DoctorSchedule::factory()->create(['day_of_week' => $notTodayIso, 'is_active' => true]);
 
     Livewire::test(ListDoctorSchedules::class)
@@ -166,8 +166,8 @@ test('slot generation action sends warning notification when no slots are create
         ->assertNotified(
             Notification::make()
                 ->warning()
-                ->title('No slots generated')
-                ->body('Check that this schedule has active days configured in the selected range.')
+                ->title(__('filament.notifications.no_slots.title'))
+                ->body(__('filament.notifications.no_slots.body'))
         );
 });
 
@@ -184,15 +184,15 @@ test('confirm appointment request action populates final_price and discount_pct'
     $patient->loyaltyAccount->update(['tier' => 'gold']);
 
     $service = Service::factory()->create(['price' => 200.00]);
-    $doctor  = Doctor::factory()->create();
-    $slot    = ScheduleSlot::factory()->create(['doctor_id' => $doctor->id, 'is_booked' => false]);
+    $doctor = Doctor::factory()->create();
+    $slot = ScheduleSlot::factory()->create(['doctor_id' => $doctor->id, 'is_booked' => false]);
 
     $appointment = Appointment::factory()->create([
         'patient_id' => $patient->id,
         'service_id' => $service->id,
-        'doctor_id'  => null,
-        'slot_id'    => null,
-        'status'     => AppointmentStatus::Pending,
+        'doctor_id' => null,
+        'slot_id' => null,
+        'status' => AppointmentStatus::Pending,
     ]);
 
     Livewire::test(ListAppointments::class)
@@ -208,4 +208,3 @@ test('confirm appointment request action populates final_price and discount_pct'
         ->and((float) $appointment->discount_pct)->toBe(20.0)
         ->and((float) $appointment->final_price)->toBe(160.0);
 });
-

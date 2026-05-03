@@ -15,6 +15,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class DoctorAppointmentResource extends Resource
 {
@@ -78,6 +79,7 @@ class DoctorAppointmentResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('patient.name')
                     ->label(__('filament.fields.patient'))
@@ -97,11 +99,11 @@ class DoctorAppointmentResource extends Resource
                 TextColumn::make('status')
                     ->badge()
                     ->color(fn (AppointmentStatus $state): string => match ($state) {
-                        AppointmentStatus::Pending   => 'warning',
+                        AppointmentStatus::Pending => 'warning',
                         AppointmentStatus::Confirmed => 'success',
                         AppointmentStatus::Cancelled => 'danger',
                         AppointmentStatus::Completed => 'gray',
-                        AppointmentStatus::NoShow    => 'gray',
+                        AppointmentStatus::NoShow => 'gray',
                     })
                     ->sortable(),
             ])
@@ -133,7 +135,7 @@ class DoctorAppointmentResource extends Resource
     {
         return [
             'index' => ListDoctorAppointments::route('/'),
-            'edit'  => EditDoctorAppointment::route('/{record}/edit'),
+            'edit' => EditDoctorAppointment::route('/{record}/edit'),
         ];
     }
 
@@ -142,12 +144,12 @@ class DoctorAppointmentResource extends Resource
         return true;
     }
 
-    public static function canView(\Illuminate\Database\Eloquent\Model $record): bool
+    public static function canView(Model $record): bool
     {
         return true;
     }
 
-    public static function canUpdate(\Illuminate\Database\Eloquent\Model $record): bool
+    public static function canUpdate(Model $record): bool
     {
         return true;
     }
