@@ -170,6 +170,8 @@ After seeding, you can log in with:
 Admin panel: **http://localhost:8000/admin**
 Doctor panel: **http://localhost:8000/doctor**
 
+Smart-ID test users: https://sk-eid.github.io/smart-id-documentation/test_accounts.html
+
 ---
 
 ## 🧪 Running tests

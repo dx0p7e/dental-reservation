@@ -54,6 +54,12 @@ class UsersTable
                 TextColumn::make('created_at')
                     ->date()
                     ->sortable(),
+                TextColumn::make('smart_id_verified_at')
+                    ->label('Smart-ID')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => $state ? 'Patvirtinta' : 'Nepatvirtinta')
+                    ->color(fn ($state) => $state ? 'success' : 'gray')
+                    ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('role')

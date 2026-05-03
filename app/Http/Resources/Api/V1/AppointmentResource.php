@@ -31,6 +31,7 @@ class AppointmentResource extends JsonResource
                 'start_time' => $this->slot->start_time,
             ] : null,
             'preferred_date' => $this->preferred_date?->format('Y-m-d'),
+            'rescheduled_at' => $this->rescheduled_at?->toISOString(),
             'discount_pct' => $this->discount_pct,
             'final_price' => $this->final_price,
         ];

@@ -36,6 +36,7 @@ export interface Appointment {
   status: string
   notes: string | null
   preferred_date: string | null
+  rescheduled_at: string | null
   discount_pct: number
   final_price: string | null
   doctor: { id: number; name: string } | null
@@ -63,6 +64,7 @@ export interface AuthUser {
   id: number
   name: string
   email: string
+  smart_id_verified_at: string | null
 }
 
 export interface Review {

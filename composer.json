@@ -15,6 +15,7 @@
         "laravel/tinker": "^3.0",
         "laravel/vonage-notification-channel": "^3.3",
         "laravel/wayfinder": "^0.1.14",
+        "sk-id-solutions/smart-id-php-client": "^3.0",
         "spatie/laravel-activitylog": "*",
         "spatie/laravel-permission": "*"
     },

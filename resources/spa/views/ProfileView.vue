@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import api from '@spa/api/axios'
+import { useAuthStore } from '@spa/stores/auth'
 import AppNavbar from '@spa/components/AppNavbar.vue'
 import type { AxiosError } from 'axios'
 
@@ -10,7 +11,7 @@ const { t } = useI18n()
 
 const route = useRoute()
 
-// Flash messages from query params
+const authStore = useAuthStore()
 const emailVerifiedNotice = ref(route.query.verified === '1')
 const invalidLinkError = ref(route.query.error === 'invalid_link')
 
@@ -21,6 +22,7 @@ const phone = ref('')
 const notificationChannel = ref('email')
 const emailVerifiedAt = ref<string | null>(null)
 const phoneVerifiedAt = ref<string | null>(null)
+const smartIdVerifiedAt = ref<string | null>(null)
 
 const profileSuccess = ref('')
 const profileError = ref('')
@@ -35,6 +37,16 @@ const otpError = ref('')
 const otpSuccess = ref('')
 const countdown = ref(0)
 let countdownInterval: ReturnType<typeof setInterval> | null = null
+
+// Smart-ID
+const smartIdPersonalCode = ref('')
+const smartIdCountry = ref('LT')
+const smartIdLoading = ref(false)
+const smartIdPollingToken = ref<string | null>(null)
+const smartIdVerificationCode = ref<string | null>(null)
+const smartIdPolling = ref(false)
+const smartIdError = ref('')
+let smartIdPollingInterval: ReturnType<typeof setInterval> | null = null
 
 // Password change
 const currentPassword = ref('')
@@ -53,6 +65,7 @@ async function fetchProfile() {
     notificationChannel.value = data.notification_channel ?? 'email'
     emailVerifiedAt.value = data.email_verified_at ?? null
     phoneVerifiedAt.value = data.phone_verified_at ?? null
+    smartIdVerifiedAt.value = data.smart_id_verified_at ?? null
   } catch {
     // silently ignore
   }
@@ -137,6 +150,75 @@ async function verifyOtp() {
   } finally {
     otpVerifyLoading.value = false
   }
+}
+
+function clearSmartIdPolling() {
+  if (smartIdPollingInterval) {
+    clearInterval(smartIdPollingInterval)
+    smartIdPollingInterval = null
+  }
+  smartIdPolling.value = false
+  smartIdPollingToken.value = null
+  smartIdVerificationCode.value = null
+  smartIdLoading.value = false
+}
+
+async function pollSmartId() {
+  if (!smartIdPollingToken.value) {
+    return
+  }
+  try {
+    const { data } = await api.get(`/smart-id/poll/${smartIdPollingToken.value}`)
+    if (data.status === 'ok') {
+      clearSmartIdPolling()
+      smartIdVerifiedAt.value = new Date().toISOString()
+      authStore.fetchUser()
+    } else if (data.status === 'failed') {
+      clearSmartIdPolling()
+      const reasonKey = data.reason === 'refused'
+        ? 'profile.smartIdRefused'
+        : data.reason === 'timeout'
+          ? 'profile.smartIdTimeout'
+          : 'profile.smartIdError'
+      smartIdError.value = t(reasonKey)
+    }
+    // status === 'running': do nothing, wait for next poll
+  } catch {
+    clearSmartIdPolling()
+    smartIdError.value = t('profile.smartIdError')
+  }
+}
+
+async function initiateSmartId() {
+  smartIdError.value = ''
+  smartIdLoading.value = true
+  try {
+    const { data } = await api.post('/smart-id/initiate', {
+      personal_code: smartIdPersonalCode.value,
+      country: smartIdCountry.value,
+    })
+    smartIdVerificationCode.value = data.verification_code
+    smartIdPollingToken.value = data.polling_token
+    smartIdPolling.value = true
+    smartIdPollingInterval = setInterval(pollSmartId, 2000)
+  } catch (err) {
+    const e = err as AxiosError<{ message?: string; errors?: Record<string, string[]> }>
+    if (e.response?.data?.errors) {
+      const firstError = Object.values(e.response.data.errors)[0]
+      smartIdError.value = Array.isArray(firstError) ? firstError[0] : firstError
+    } else {
+      smartIdError.value = e.response?.data?.message ?? t('profile.smartIdError')
+    }
+  } finally {
+    if (!smartIdPolling.value) {
+      smartIdLoading.value = false
+    }
+  }
+}
+
+function cancelSmartId() {
+  clearSmartIdPolling()
+  smartIdPersonalCode.value = ''
 }
 
 async function changePassword() {
@@ -258,6 +340,78 @@ async function changePassword() {
         </button>
       </section>
 
+      <!-- Smart-ID Identity Verification -->
+      <section class="mb-8 rounded-xl bg-white p-6 shadow-sm">
+        <h2 class="mb-4 text-lg font-semibold text-clinic-dark">{{ t('profile.smartIdTitle') }}</h2>
+
+        <!-- Verified state -->
+        <div v-if="smartIdVerifiedAt" class="flex items-center gap-2 text-sm font-medium text-green-800">
+          <span class="text-green-600">✓</span>
+          {{ t('profile.smartIdVerified', { date: new Date(smartIdVerifiedAt).toLocaleDateString('lt-LT') }) }}
+        </div>
+
+        <!-- Polling state — verification code displayed -->
+        <div v-else-if="smartIdPolling" class="space-y-4">
+          <p class="text-sm text-clinic-muted">{{ t('profile.smartIdCodeInstruction') }}</p>
+          <div class="flex items-center gap-4">
+            <span class="rounded-lg bg-clinic-teal/10 px-6 py-3 text-3xl font-bold tracking-widest text-clinic-teal">
+              {{ smartIdVerificationCode }}
+            </span>
+            <svg class="h-6 w-6 animate-spin text-clinic-teal" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+            </svg>
+          </div>
+          <button
+            @click="cancelSmartId"
+            class="text-sm text-clinic-muted underline hover:text-clinic-dark"
+          >
+            {{ t('common.cancel') }}
+          </button>
+        </div>
+
+        <!-- Error state -->
+        <div v-else-if="smartIdError" class="space-y-3">
+          <div class="rounded-lg bg-red-50 p-3 text-sm text-red-800">{{ smartIdError }}</div>
+          <button
+            @click="smartIdError = ''"
+            class="rounded-lg bg-clinic-teal px-4 py-2 text-sm font-medium text-white hover:bg-opacity-90"
+          >
+            {{ t('common.retry') }}
+          </button>
+        </div>
+
+        <!-- Idle form state -->
+        <div v-else class="space-y-4">
+          <div>
+            <label class="mb-1 block text-sm font-medium text-clinic-muted">{{ t('profile.smartIdCountry') }}</label>
+            <select
+              v-model="smartIdCountry"
+              class="rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-clinic-teal focus:outline-none"
+            >
+              <option value="LT">Lietuva (LT)</option>
+              <option value="EE">Estija (EE)</option>
+              <option value="LV">Latvija (LV)</option>
+            </select>
+          </div>
+          <div>
+            <label class="mb-1 block text-sm font-medium text-clinic-muted">{{ t('profile.smartIdPersonalCode') }}</label>
+            <input
+              v-model="smartIdPersonalCode"
+              type="text"
+              class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-clinic-teal focus:outline-none"
+            />
+          </div>
+          <button
+            @click="initiateSmartId"
+            :disabled="smartIdLoading || !smartIdPersonalCode"
+            class="rounded-lg bg-clinic-teal px-5 py-2 text-sm font-medium text-white hover:bg-opacity-90 disabled:opacity-50"
+          >
+            {{ smartIdLoading ? t('profile.smartIdVerifying') : t('profile.smartIdVerify') }}
+          </button>
+        </div>
+      </section>
+
       <!-- Phone verification -->
       <section v-if="phone && !phoneVerifiedAt" class="mb-8 rounded-xl bg-white p-6 shadow-sm">
         <h2 class="mb-4 text-lg font-semibold text-clinic-dark">{{ t('profile.phoneVerification') }}</h2>
@@ -304,6 +458,8 @@ async function changePassword() {
         </div>
       </section>
 
+      
+
       <div v-else-if="phone && phoneVerifiedAt" class="mb-8 rounded-xl bg-green-50 p-4">
         <p class="text-sm font-medium text-green-800">✓ {{ t('profile.phoneVerified', { phone }) }}</p>
       </div>
@@ -311,6 +467,8 @@ async function changePassword() {
       <div v-if="emailVerifiedAt" class="mb-8 rounded-xl bg-green-50 p-4">
         <p class="text-sm font-medium text-green-800">✓ {{ t('profile.emailVerified', { email }) }}</p>
       </div>
+
+      
 
       <!-- Password change -->
       <section class="rounded-xl bg-white p-6 shadow-sm">

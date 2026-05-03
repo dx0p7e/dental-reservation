@@ -11,6 +11,7 @@ use App\Models\Appointment;
 use App\Models\ScheduleSlot;
 use App\Models\Service;
 use App\Notifications\AppointmentBookedNotification;
+use App\Notifications\AppointmentConfirmedNotification;
 use App\Notifications\AppointmentRequestedNotification;
 use App\Notifications\AppointmentRescheduledNotification;
 use App\Services\LoyaltyPricingService;
@@ -59,7 +60,9 @@ class AppointmentController extends Controller
                 'doctor_id' => $request->doctor_id,
                 'service_id' => $request->service_id,
                 'slot_id' => $slot->id,
-                'status' => AppointmentStatus::Pending,
+                'status' => $request->user()->smart_id_verified_at
+                    ? AppointmentStatus::Confirmed
+                    : AppointmentStatus::Pending,
                 'discount_pct' => $result->discountPercent,
                 'final_price' => $result->finalPrice,
             ]);
@@ -68,7 +71,11 @@ class AppointmentController extends Controller
         $appointment->load(['doctor.user', 'service', 'slot']);
 
         $appointment->loadMissing('patient');
-        $appointment->patient->notify(new AppointmentBookedNotification($appointment));
+        if ($appointment->status === AppointmentStatus::Confirmed) {
+            $appointment->patient->notify(new AppointmentConfirmedNotification($appointment));
+        } else {
+            $appointment->patient->notify(new AppointmentBookedNotification($appointment));
+        }
 
         return new AppointmentResource($appointment);
     }
@@ -157,6 +164,10 @@ class AppointmentController extends Controller
             return response()->json(['message' => 'This appointment cannot be rescheduled.'], 422);
         }
 
+        if ($appointment->rescheduled_at !== null) {
+            return response()->json(['message' => 'This appointment has already been rescheduled once and cannot be rescheduled again.'], 422);
+        }
+
         $request->validate(['slot_id' => ['required', 'integer', 'exists:schedule_slots,id']]);
 
         $newSlot = ScheduleSlot::where('id', $request->slot_id)
@@ -179,7 +190,7 @@ class AppointmentController extends Controller
 
             $oldSlot->update(['is_booked' => false]);
             $lockedNewSlot->update(['is_booked' => true]);
-            $appointment->update(['slot_id' => $lockedNewSlot->id]);
+            $appointment->update(['slot_id' => $lockedNewSlot->id, 'rescheduled_at' => now()]);
         });
 
         $appointment->load(['doctor.user', 'service', 'slot', 'patient']);

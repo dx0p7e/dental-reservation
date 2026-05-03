@@ -30,6 +30,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         'notification_channel',
         'phone_verified_at',
         'email_verified_at',
+        'smart_id_verified_at',
     ];
 
     protected $hidden = [
@@ -44,6 +45,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'phone_verified_at' => 'datetime',
+            'smart_id_verified_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
             'gdpr_consent_at' => 'datetime',

@@ -30,7 +30,7 @@ class AuthController extends Controller
 
         return response()->json([
             'token' => $token,
-            'user' => $user->only('id', 'name', 'email'),
+            'user' => $user->only('id', 'name', 'email', 'smart_id_verified_at'),
         ], 201);
     }
 
@@ -52,7 +52,7 @@ class AuthController extends Controller
 
         return response()->json([
             'token' => $token,
-            'user' => $user->only('id', 'name', 'email'),
+            'user' => $user->only('id', 'name', 'email', 'smart_id_verified_at'),
         ]);
     }
 

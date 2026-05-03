@@ -148,6 +148,7 @@
   "appointments.doctorTBC": "Doctor TBC",
   "appointments.awaitingConfirmation": "Awaiting confirmation",
   "appointments.preferred": "Preferred: {date}",
+  "appointments.pendingSmartIdHint": "Want to skip approval? Verify your identity with Smart-ID, otherwise we will contact you.",
 
   "reschedule.title": "Reschedule Appointment",
   "reschedule.submit": "Confirm reschedule",
@@ -158,6 +159,7 @@
   "reschedule.pickNew": "Pick a new time",
   "reschedule.noSlots": "No available slots for this doctor at the moment.",
   "reschedule.error": "Failed to reschedule. Please try again.",
+  "reschedule.onceOnly": "Time change is only possible once per visit.",
 
   "requestBooking.title": "Request an Appointment",
   "requestBooking.note": "Note",
@@ -242,6 +244,16 @@
   "profile.passwordChanged": "Password changed.",
   "profile.passwordChanging": "Changing…",
   "profile.passwordChangeBtn": "Change password",
+  "profile.smartIdTitle": "Identity Verification (Smart-ID)",
+  "profile.smartIdPersonalCode": "Personal code",
+  "profile.smartIdCountry": "Country",
+  "profile.smartIdVerify": "Verify identity",
+  "profile.smartIdVerifying": "Connecting…",
+  "profile.smartIdCodeInstruction": "Open the Smart-ID app and confirm the number:",
+  "profile.smartIdVerified": "✓ Identity verified ({date})",
+  "profile.smartIdRefused": "Verification was declined. Please try again.",
+  "profile.smartIdTimeout": "Verification session expired. Please try again.",
+  "profile.smartIdError": "Identity verification failed. Please try again.",
 
   "about.title": "About Us",
   "about.subtitle": "A modern dental clinic providing top-tier services since 2015.",

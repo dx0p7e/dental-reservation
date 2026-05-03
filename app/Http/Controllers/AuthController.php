@@ -16,18 +16,18 @@ class AuthController extends Controller
     public function register(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'name'     => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'email', 'max:255', 'unique:users,email'],
-            'phone'    => ['nullable', 'string', 'max:20'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'phone' => ['nullable', 'string', 'max:20'],
             'password' => ['required', 'string', 'confirmed', Password::default()],
         ]);
 
         $user = User::create([
-            'name'     => $validated['name'],
-            'email'    => $validated['email'],
-            'phone'    => $validated['phone'] ?? null,
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'] ?? null,
             'password' => $validated['password'],
-            'role'     => 'patient',
+            'role' => 'patient',
         ]);
 
         event(new Registered($user));
@@ -38,7 +38,7 @@ class AuthController extends Controller
     public function login(Request $request): JsonResponse
     {
         $request->validate([
-            'email'    => ['required', 'email'],
+            'email' => ['required', 'email'],
             'password' => ['required', 'string'],
         ]);
 
@@ -65,7 +65,7 @@ class AuthController extends Controller
 
     public function user(Request $request): JsonResponse
     {
-        return response()->json(['user' => $request->user()->only('id', 'name', 'email', 'role')]);
+        return response()->json(['user' => $request->user()->only('id', 'name', 'email', 'role', 'smart_id_verified_at')]);
     }
 
     public function verifyEmail(Request $request, int $id, string $hash): RedirectResponse

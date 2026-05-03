@@ -23,6 +23,7 @@ class Appointment extends Model
         'slot_id',
         'preferred_date',
         'status',
+        'rescheduled_at',
         'notes',
         'doctor_notes',
         'reminder_sent_at',
@@ -34,6 +35,7 @@ class Appointment extends Model
         'status' => AppointmentStatus::class,
         'preferred_date' => 'date',
         'reminder_sent_at' => 'datetime',
+        'rescheduled_at' => 'datetime',
         'discount_pct' => 'decimal:2',
         'final_price' => 'decimal:2',
     ];

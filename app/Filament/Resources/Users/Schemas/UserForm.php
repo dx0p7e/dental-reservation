@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\Users\Schemas;
 
 use App\Models\User;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\Placeholder;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Model;
@@ -77,6 +77,10 @@ class UserForm
                                 : '—'),
                     ])
                     ->columns(2),
+                Placeholder::make('smart_id_verified_at')
+                    ->label('Smart-ID patvirtinta')
+                    ->content(fn (User $record): string => $record->smart_id_verified_at?->format('Y-m-d H:i') ?? 'Nepatvirtinta')
+                    ->hiddenOn('create'),
             ]);
     }
 }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import api from '@spa/api/axios'
 import { useAuthStore } from '@spa/stores/auth'
@@ -13,7 +13,6 @@ import type { AxiosError } from 'axios'
 const { t } = useI18n()
 
 const route = useRoute()
-const router = useRouter()
 const authStore = useAuthStore()
 
 const appointments = ref<Appointment[]>([])
@@ -55,15 +54,14 @@ async function cancel(id: number) {
 
 async function handleLogout() {
   await authStore.logout()
-  router.push('/login')
 }
 
 function canCancel(status: string) {
   return status === 'pending' || status === 'confirmed'
 }
 
-function canReschedule(status: string, hasSlot: boolean): boolean {
-  return (status === 'pending' || status === 'confirmed') && hasSlot
+function canReschedule(status: string, hasSlot: boolean, rescheduledAt: string | null): boolean {
+  return (status === 'pending' || status === 'confirmed') && hasSlot && rescheduledAt === null
 }
 </script>
 
@@ -115,43 +113,55 @@ function canReschedule(status: string, hasSlot: boolean): boolean {
           <div
             v-for="appt in appointments"
             :key="appt.id"
-            class="flex items-center justify-between rounded-lg border border-clinic-border bg-white p-5"
+            class="rounded-lg border border-clinic-border bg-white p-5"
           >
-            <div>
-              <p class="font-medium text-clinic-text">{{ appt.doctor?.name ?? t('appointments.doctorTBC') }}</p>
-              <p class="mt-0.5 text-sm text-clinic-muted">{{ appt.service.name }}</p>
-              <p class="mt-0.5 text-sm text-clinic-muted">
-                <template v-if="appt.slot">{{ appt.slot.date }} {{ appt.slot.start_time }}</template>
-                <template v-else-if="appt.preferred_date">{{ t('appointments.preferred', { date: appt.preferred_date }) }}</template>
-                <template v-else>{{ t('appointments.awaitingConfirmation') }}</template>
-              </p>
-              <p v-if="appt.final_price !== null" class="mt-0.5 text-sm">
-                <template v-if="appt.discount_pct > 0">
-                  <span class="mr-1 text-clinic-muted line-through">€{{ appt.service.price }}</span>
-                  <span class="font-medium text-clinic-teal">€{{ appt.final_price }}</span>
-                </template>
-                <template v-else>
-                  <span class="text-clinic-muted">€{{ appt.final_price }}</span>
-                </template>
-              </p>
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="font-medium text-clinic-text">{{ appt.doctor?.name ?? t('appointments.doctorTBC') }}</p>
+                <p class="mt-0.5 text-sm text-clinic-muted">{{ appt.service.name }}</p>
+                <p class="mt-0.5 text-sm text-clinic-muted">
+                  <template v-if="appt.slot">{{ appt.slot.date }} {{ appt.slot.start_time }}</template>
+                  <template v-else-if="appt.preferred_date">{{ t('appointments.preferred', { date: appt.preferred_date }) }}</template>
+                  <template v-else>{{ t('appointments.awaitingConfirmation') }}</template>
+                </p>
+                <p v-if="appt.final_price !== null" class="mt-0.5 text-sm">
+                  <template v-if="appt.discount_pct > 0">
+                    <span class="mr-1 text-clinic-muted line-through">€{{ appt.service.price }}</span>
+                    <span class="font-medium text-clinic-teal">€{{ appt.final_price }}</span>
+                  </template>
+                  <template v-else>
+                    <span class="text-clinic-muted">€{{ appt.final_price }}</span>
+                  </template>
+                </p>
+              </div>
+              <div class="flex items-center gap-3">
+                <StatusBadge :status="appt.status" />
+                <RouterLink
+                  v-if="canReschedule(appt.status, appt.slot !== null, appt.rescheduled_at)"
+                  :to="`/dashboard/appointments/${appt.id}/reschedule`"
+                  class="rounded-lg border border-clinic-border px-3 py-1 text-xs text-clinic-text hover:bg-clinic-surface"
+                >
+                  {{ t('appointments.reschedule') }}
+                </RouterLink>
+                <button
+                  v-if="canCancel(appt.status)"
+                  @click="cancel(appt.id)"
+                  :disabled="cancelling === appt.id"
+                  class="rounded-lg border border-red-200 px-3 py-1 text-xs text-red-600 hover:bg-red-50 disabled:opacity-50"
+                >
+                  {{ cancelling === appt.id ? t('appointments.cancelling') : t('appointments.cancel') }}
+                </button>
+              </div>
             </div>
-            <div class="flex items-center gap-3">
-              <StatusBadge :status="appt.status" />
-              <RouterLink
-                v-if="canReschedule(appt.status, appt.slot !== null)"
-                :to="`/dashboard/appointments/${appt.id}/reschedule`"
-                class="rounded-lg border border-clinic-border px-3 py-1 text-xs text-clinic-text hover:bg-clinic-surface"
-              >
-                {{ t('appointments.reschedule') }}
+            <div
+              v-if="appt.status === 'pending' && !authStore.user?.smart_id_verified_at"
+              class="mt-3 flex items-center gap-2 rounded-md bg-yellow-50 px-3 py-2 text-xs text-yellow-800"
+            >
+              <span>⚠</span>
+              <span>{{ t('appointments.pendingSmartIdHint') }}</span>
+              <RouterLink to="/dashboard/profile" class="ml-auto shrink-0 font-medium underline hover:text-yellow-900">
+                Smart-ID
               </RouterLink>
-              <button
-                v-if="canCancel(appt.status)"
-                @click="cancel(appt.id)"
-                :disabled="cancelling === appt.id"
-                class="rounded-lg border border-red-200 px-3 py-1 text-xs text-red-600 hover:bg-red-50 disabled:opacity-50"
-              >
-                {{ cancelling === appt.id ? t('appointments.cancelling') : t('appointments.cancel') }}
-              </button>
             </div>
           </div>
         </div>

@@ -14,12 +14,13 @@ class ProfileController extends Controller
         $user = auth()->user();
 
         return response()->json([
-            'id'                   => $user->id,
-            'name'                 => $user->name,
-            'email'                => $user->email,
-            'phone'                => $user->phone,
-            'email_verified_at'    => $user->email_verified_at,
-            'phone_verified_at'    => $user->phone_verified_at,
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'email_verified_at' => $user->email_verified_at,
+            'phone_verified_at' => $user->phone_verified_at,
+            'smart_id_verified_at' => $user->smart_id_verified_at,
             'notification_channel' => $user->notification_channel,
         ]);
     }

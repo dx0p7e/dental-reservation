@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import api from '@spa/api/axios'
 import type { AuthUser } from '@spa/types'
 
@@ -45,12 +46,14 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function logout() {
+    const router = useRouter()
     try {
       await api.post('/auth/logout')
     } finally {
       token.value = null
       user.value = null
       localStorage.removeItem('booking_token')
+      router.push('/')
     }
   }
 

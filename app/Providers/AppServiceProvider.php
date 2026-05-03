@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use Sk\SmartId\SmartIdClient;
+use Sk\SmartId\Ssl\SslPinnedPublicKeyStore;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,7 +23,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(SmartIdClient::class, fn () => new SmartIdClient(
+            config('smart-id.rp_uuid'),
+            config('smart-id.rp_name'),
+            config('smart-id.host_url'),
+            SslPinnedPublicKeyStore::loadDemo(),
+        ));
     }
 
     /**

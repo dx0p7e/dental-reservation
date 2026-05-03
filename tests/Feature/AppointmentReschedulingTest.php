@@ -215,3 +215,31 @@ it('show returns 403 for a different patient', function (): void {
     $this->getJson("/api/v1/appointments/{$appointment->id}")
         ->assertForbidden();
 });
+
+// --- T9.15: returns 422 when appointment has already been rescheduled ---
+
+it('returns 422 when appointment has already been rescheduled once', function (): void {
+    ['patient' => $patient, 'appointment' => $appointment, 'newSlot' => $newSlot] = makePatientWithAppointment();
+    $appointment->update(['rescheduled_at' => now()]);
+
+    Sanctum::actingAs($patient);
+
+    $this->patchJson("/api/v1/appointments/{$appointment->id}/reschedule", ['slot_id' => $newSlot->id])
+        ->assertUnprocessable()
+        ->assertJsonFragment(['message' => 'This appointment has already been rescheduled once and cannot be rescheduled again.']);
+});
+
+// --- T9.16: stamps rescheduled_at on first successful reschedule ---
+
+it('stamps rescheduled_at on successful reschedule', function (): void {
+    ['patient' => $patient, 'appointment' => $appointment, 'newSlot' => $newSlot] = makePatientWithAppointment();
+
+    expect($appointment->rescheduled_at)->toBeNull();
+
+    Sanctum::actingAs($patient);
+
+    $this->patchJson("/api/v1/appointments/{$appointment->id}/reschedule", ['slot_id' => $newSlot->id])
+        ->assertOk();
+
+    expect($appointment->fresh()->rescheduled_at)->not->toBeNull();
+});
