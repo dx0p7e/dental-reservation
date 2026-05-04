@@ -20,3 +20,5 @@ class PhoneOtpNotification extends Notification
     public function toVonage(object $notifiable): VonageMessage
     {
         return (new VonageMessage)->content("Jūsų patvirtinimo kodas: {$this->code}. Galioja 10 min.");
+    }
+}
