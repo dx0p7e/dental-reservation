@@ -12,10 +12,16 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
+/**
+ * @property Carbon|null $email_verified_at
+ * @property Carbon|null $phone_verified_at
+ * @property Carbon|null $smart_id_verified_at
+ */
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
@@ -82,26 +88,31 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         };
     }
 
+    /** @return HasOne<Doctor, $this> */
     public function doctor(): HasOne
     {
         return $this->hasOne(Doctor::class);
     }
 
+    /** @return HasMany<Appointment, $this> */
     public function appointments(): HasMany
     {
         return $this->hasMany(Appointment::class, 'patient_id');
     }
 
+    /** @return HasOne<LoyaltyAccount, $this> */
     public function loyaltyAccount(): HasOne
     {
         return $this->hasOne(LoyaltyAccount::class, 'patient_id');
     }
 
+    /** @return HasOne<PatientReview, $this> */
     public function review(): HasOne
     {
         return $this->hasOne(PatientReview::class, 'patient_id');
     }
 
+    /** @return HasManyThrough<LoyaltyTransaction, LoyaltyAccount, $this> */
     public function loyaltyTransactions(): HasManyThrough
     {
         return $this->hasManyThrough(

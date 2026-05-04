@@ -38,7 +38,7 @@ class AppointmentRequestedNotification extends Notification implements ShouldQue
 
     public function toVonage(object $notifiable): VonageMessage
     {
-        $date = $this->appointment->preferred_date->format('Y-m-d');
+        $date = $this->appointment->preferred_date?->format('Y-m-d') ?? '';
         $service = $this->appointment->service->name;
 
         return (new VonageMessage)

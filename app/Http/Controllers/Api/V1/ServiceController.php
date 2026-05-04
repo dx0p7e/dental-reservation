@@ -7,6 +7,7 @@ use App\Http\Resources\Api\V1\ServiceResource;
 use App\Models\LoyaltyAccount;
 use App\Models\LoyaltyTier;
 use App\Models\Service;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -16,7 +17,7 @@ class ServiceController extends Controller
     {
         $discountPct = null;
 
-        if ($user = auth('sanctum')->user()) {
+        if (($user = auth('sanctum')->user()) instanceof User) {
             $tier = LoyaltyAccount::where('patient_id', $user->id)->value('tier');
 
             if ($tier !== null) {

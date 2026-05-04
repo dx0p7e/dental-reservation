@@ -63,8 +63,8 @@ class DoctorAppointmentResource extends Resource
                     ->content(fn (Appointment $record): string => $record->service->name ?? '—'),
                 Placeholder::make('slot_info')
                     ->label(__('filament.fields.slot'))
-                    ->content(fn (Appointment $record): string => $record->slot
-                        ? $record->slot->date->format('Y-m-d').' '.$record->slot->start_time
+                    ->content(fn (Appointment $record): string => ($slot = $record->slot)
+                        ? $slot->date->format('Y-m-d').' '.$slot->start_time
                         : '—'),
                 Placeholder::make('status_display')
                     ->label(__('filament.fields.status'))

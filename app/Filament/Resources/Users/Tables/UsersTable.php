@@ -14,6 +14,7 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 class UsersTable
 {
@@ -131,7 +132,7 @@ class UsersTable
                         }),
                     DeleteBulkAction::make()
                         ->using(function (Collection $records): void {
-                            $records->filter(fn (User $record): bool => $record->id !== auth()->id())
+                            $records->filter(fn (Model $record): bool => $record->getKey() !== auth()->id())
                                 ->each->delete();
                         }),
                 ]),

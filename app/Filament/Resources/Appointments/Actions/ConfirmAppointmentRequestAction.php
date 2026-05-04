@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Appointments\Actions;
 
 use App\Enums\AppointmentStatus;
+use App\Models\Appointment;
 use App\Models\Doctor;
 use App\Models\LoyaltyTier;
 use App\Models\ScheduleSlot;
@@ -11,7 +12,6 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Utilities\Get;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 class ConfirmAppointmentRequestAction
@@ -22,7 +22,7 @@ class ConfirmAppointmentRequestAction
             ->label(__('filament.actions.confirm'))
             ->color('success')
             ->icon('heroicon-o-check-circle')
-            ->visible(fn (Model $record): bool => $record->slot_id === null && $record->status === AppointmentStatus::Pending)
+            ->visible(fn (Appointment $record): bool => $record->slot_id === null && $record->status === AppointmentStatus::Pending)
             ->modalHeading(__('filament.modals.confirm_appointment.heading'))
             ->modalSubmitActionLabel(__('filament.modals.confirm_appointment.submit'))
             ->schema([
@@ -53,16 +53,17 @@ class ConfirmAppointmentRequestAction
                     ->searchable()
                     ->required(),
             ])
-            ->action(function (array $data, Model $record): void {
+            ->action(function (array $data, Appointment $record): void {
                 DB::transaction(function () use ($data, $record): void {
-                    $account = $record->patient->loyaltyAccount;
+                    $account = $record->patient?->loyaltyAccount;
                     $discountPct = 0;
                     if ($account) {
                         $tier = LoyaltyTier::where('tier', $account->tier)->first();
-                        $discountPct = $tier?->discount_bonus_pct ?? 0;
+                        $discountPct = $tier->discount_bonus_pct ?? 0;
                     }
 
                     $service = Service::find($record->service_id);
+                    assert($service !== null);
                     $finalPrice = round($service->price * (1 - $discountPct / 100), 2);
 
                     $record->update([
@@ -73,7 +74,7 @@ class ConfirmAppointmentRequestAction
                         'final_price' => $finalPrice,
                     ]);
 
-                    ScheduleSlot::find($data['slot_id'])->update(['is_booked' => true]);
+                    ScheduleSlot::find($data['slot_id'])?->update(['is_booked' => true]);
                 });
 
                 Notification::make()

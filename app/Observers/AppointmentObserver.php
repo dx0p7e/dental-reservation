@@ -25,9 +25,9 @@ class AppointmentObserver
         $appointment->loadMissing('patient');
 
         match ($appointment->status) {
-            AppointmentStatus::Confirmed => $appointment->patient->notify(new AppointmentConfirmedNotification($appointment)),
-            AppointmentStatus::Cancelled => $appointment->patient->notify(new AppointmentCancelledNotification($appointment)),
-            AppointmentStatus::NoShow => $appointment->patient->notify(new AppointmentNoShowNotification($appointment)),
+            AppointmentStatus::Confirmed => $appointment->patient?->notify(new AppointmentConfirmedNotification($appointment)),
+            AppointmentStatus::Cancelled => $appointment->patient?->notify(new AppointmentCancelledNotification($appointment)),
+            AppointmentStatus::NoShow => $appointment->patient?->notify(new AppointmentNoShowNotification($appointment)),
             AppointmentStatus::Completed => $this->handleCompleted($appointment),
             default => null,
         };
@@ -35,7 +35,7 @@ class AppointmentObserver
 
     private function handleCompleted(Appointment $appointment): void
     {
-        $appointment->patient->notify(new AppointmentCompletedNotification($appointment));
+        $appointment->patient?->notify(new AppointmentCompletedNotification($appointment));
 
         $rule = LoyaltyRule::where('service_id', $appointment->service_id)->first();
 

@@ -33,11 +33,13 @@ class LoyaltyTransaction extends Model
         'points_delta' => 'integer',
     ];
 
+    /** @return BelongsTo<LoyaltyAccount, $this> */
     public function loyaltyAccount(): BelongsTo
     {
         return $this->belongsTo(LoyaltyAccount::class);
     }
 
+    /** @return BelongsTo<Appointment, $this> */
     public function appointment(): BelongsTo
     {
         return $this->belongsTo(Appointment::class);

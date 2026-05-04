@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Users\Pages;
 
 use App\Filament\Resources\Users\UserResource;
 use App\Models\Doctor;
+use App\Models\User;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -25,12 +26,15 @@ class CreateUser extends CreateRecord
 
     protected function afterCreate(): void
     {
-        DB::transaction(function (): void {
-            $this->record->syncRoles([$this->record->role]);
+        $record = $this->record;
+        assert($record instanceof User);
 
-            if ($this->record->role === 'doctor') {
+        DB::transaction(function () use ($record): void {
+            $record->syncRoles([$record->role]);
+
+            if ($record->role === 'doctor') {
                 Doctor::firstOrCreate(
-                    ['user_id' => $this->record->id],
+                    ['user_id' => $record->id],
                     ['is_active' => true, 'specialization' => '', 'bio' => '']
                 );
             }

@@ -27,6 +27,7 @@ class DoctorSchedule extends Model
         'is_active' => 'boolean',
     ];
 
+    /** @return BelongsTo<Doctor, $this> */
     public function doctor(): BelongsTo
     {
         return $this->belongsTo(Doctor::class);

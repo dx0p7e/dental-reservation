@@ -26,6 +26,7 @@ class PatientReview extends Model
         ];
     }
 
+    /** @return BelongsTo<User, $this> */
     public function patient(): BelongsTo
     {
         return $this->belongsTo(User::class, 'patient_id');

@@ -39,9 +39,10 @@ class AppointmentConfirmedNotification extends Notification implements ShouldQue
     public function toVonage(object $notifiable): VonageMessage
     {
         $slot = $this->appointment->slot;
+        assert($slot !== null);
         $date = $slot->date->format('Y-m-d');
         $time = substr($slot->start_time, 0, 5);
-        $doctor = $this->appointment->doctor->user->name;
+        $doctor = $this->appointment->doctor?->user->name ?? '';
         $service = $this->appointment->service->name;
 
         return (new VonageMessage)

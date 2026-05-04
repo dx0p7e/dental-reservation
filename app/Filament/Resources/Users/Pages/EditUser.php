@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Users\Pages;
 
 use App\Filament\Resources\Users\UserResource;
 use App\Models\Doctor;
+use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\TextInput;
@@ -43,20 +44,23 @@ class EditUser extends EditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        $data['email_verified_at'] = isset($data['email_verified_at']) && $data['email_verified_at'] !== null;
-        $data['phone_verified_at'] = isset($data['phone_verified_at']) && $data['phone_verified_at'] !== null;
+        $data['email_verified_at'] = isset($data['email_verified_at']);
+        $data['phone_verified_at'] = isset($data['phone_verified_at']);
 
         return $data;
     }
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
+        $record = $this->record;
+        assert($record instanceof User);
+
         $data['email_verified_at'] = $data['email_verified_at']
-            ? ($this->record->email_verified_at ?? now())
+            ? ($record->email_verified_at ?? now())
             : null;
 
         $data['phone_verified_at'] = $data['phone_verified_at']
-            ? ($this->record->phone_verified_at ?? now())
+            ? ($record->phone_verified_at ?? now())
             : null;
 
         return $data;
@@ -64,12 +68,15 @@ class EditUser extends EditRecord
 
     protected function afterSave(): void
     {
-        DB::transaction(function (): void {
-            $this->record->syncRoles([$this->record->role]);
+        $record = $this->record;
+        assert($record instanceof User);
 
-            if ($this->record->role === 'doctor') {
+        DB::transaction(function () use ($record): void {
+            $record->syncRoles([$record->role]);
+
+            if ($record->role === 'doctor') {
                 Doctor::firstOrCreate(
-                    ['user_id' => $this->record->id],
+                    ['user_id' => $record->id],
                     ['is_active' => true, 'specialization' => '', 'bio' => '']
                 );
             }

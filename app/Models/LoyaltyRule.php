@@ -43,6 +43,7 @@ class LoyaltyRule extends Model
             });
     }
 
+    /** @return BelongsTo<Service, $this> */
     public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class);

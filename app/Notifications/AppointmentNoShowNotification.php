@@ -39,6 +39,7 @@ class AppointmentNoShowNotification extends Notification implements ShouldQueue
     public function toVonage(object $notifiable): VonageMessage
     {
         $slot = $this->appointment->slot;
+        assert($slot !== null);
         $date = $slot->date->format('Y-m-d');
         $service = $this->appointment->service->name;
 

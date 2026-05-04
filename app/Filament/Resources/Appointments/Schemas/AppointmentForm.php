@@ -19,7 +19,7 @@ class AppointmentForm
             ->components([
                 Select::make('patient_id')
                     ->label(__('filament.fields.patient'))
-                    ->options(fn () => User::role('patient')->get()->pluck('name', 'id'))
+                    ->options(fn () => User::role('patient')->pluck('name', 'id'))
                     ->searchable()
                     ->required(),
                 Select::make('doctor_id')
@@ -29,7 +29,7 @@ class AppointmentForm
                     ->nullable(),
                 Select::make('service_id')
                     ->label(__('filament.fields.service'))
-                    ->options(fn () => Service::all()->pluck('name', 'id'))
+                    ->options(fn () => Service::pluck('name', 'id'))
                     ->searchable()
                     ->required(),
                 Select::make('slot_id')
@@ -37,7 +37,7 @@ class AppointmentForm
                     ->options(fn () => ScheduleSlot::with('doctor.user')
                         ->get()
                         ->mapWithKeys(fn (ScheduleSlot $slot) => [
-                            $slot->id => 'Dr. '.$slot->doctor->user->name.' — '.$slot->date->format('Y-m-d').' '.$slot->start_time,
+                            $slot->id => 'Dr. '.($slot->doctor?->user->name ?? '').' — '.$slot->date->format('Y-m-d').' '.$slot->start_time,
                         ]))
                     ->searchable()
                     ->nullable(),

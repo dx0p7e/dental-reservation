@@ -33,7 +33,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
         ])->validateWithBag('updateProfileInformation');
 
         if ($input['email'] !== $user->email &&
-            $user instanceof MustVerifyEmail) {
+            $user instanceof MustVerifyEmail) { // @phpstan-ignore instanceof.alwaysTrue
             $this->updateVerifiedUser($user, $input);
         } else {
             $user->forceFill([

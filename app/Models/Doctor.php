@@ -26,26 +26,31 @@ class Doctor extends Model
         'is_active' => 'boolean',
     ];
 
+    /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /** @return HasMany<DoctorSchedule, $this> */
     public function schedules(): HasMany
     {
         return $this->hasMany(DoctorSchedule::class);
     }
 
+    /** @return HasMany<ScheduleSlot, $this> */
     public function slots(): HasMany
     {
         return $this->hasMany(ScheduleSlot::class);
     }
 
+    /** @return HasMany<Appointment, $this> */
     public function appointments(): HasMany
     {
         return $this->hasMany(Appointment::class);
     }
 
+    /** @return BelongsToMany<Service, $this> */
     public function services(): BelongsToMany
     {
         return $this->belongsToMany(Service::class, 'doctor_service');

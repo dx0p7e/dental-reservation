@@ -29,7 +29,7 @@ class SendAppointmentReminders extends Command
             ->get();
 
         foreach ($appointments as $appointment) {
-            Mail::to($appointment->patient->email)->send(new AppointmentReminder($appointment));
+            Mail::to($appointment->patient?->email)->send(new AppointmentReminder($appointment));
 
             $appointment->update(['reminder_sent_at' => now()]);
         }

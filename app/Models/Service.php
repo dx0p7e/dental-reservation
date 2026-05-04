@@ -27,16 +27,19 @@ class Service extends Model
         'duration_minutes' => 'integer',
     ];
 
+    /** @return HasOne<LoyaltyRule, $this> */
     public function loyaltyRule(): HasOne
     {
         return $this->hasOne(LoyaltyRule::class);
     }
 
+    /** @return HasMany<Appointment, $this> */
     public function appointments(): HasMany
     {
         return $this->hasMany(Appointment::class);
     }
 
+    /** @return BelongsToMany<Doctor, $this> */
     public function doctors(): BelongsToMany
     {
         return $this->belongsToMany(Doctor::class, 'doctor_service');

@@ -47,26 +47,31 @@ class Appointment extends Model
             ->logOnlyDirty();
     }
 
+    /** @return BelongsTo<User, $this> */
     public function patient(): BelongsTo
     {
         return $this->belongsTo(User::class, 'patient_id');
     }
 
+    /** @return BelongsTo<Doctor, $this> */
     public function doctor(): BelongsTo
     {
         return $this->belongsTo(Doctor::class);
     }
 
+    /** @return BelongsTo<Service, $this> */
     public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
     }
 
+    /** @return BelongsTo<ScheduleSlot, $this> */
     public function slot(): BelongsTo
     {
         return $this->belongsTo(ScheduleSlot::class, 'slot_id');
     }
 
+    /** @return HasMany<LoyaltyTransaction, $this> */
     public function loyaltyTransactions(): HasMany
     {
         return $this->hasMany(LoyaltyTransaction::class);

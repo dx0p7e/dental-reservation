@@ -19,7 +19,7 @@ class LoyaltyRuleForm
                     ->relationship('service', 'name')
                     ->searchable()
                     ->required()
-                    ->rule(fn (?Model $record) => Rule::unique('loyalty_rules', 'service_id')->ignore($record?->id)),
+                    ->rule(fn (?Model $record) => Rule::unique('loyalty_rules', 'service_id')->ignore($record?->getKey())),
                 TextInput::make('points_earned')
                     ->required()
                     ->numeric()

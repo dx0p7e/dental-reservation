@@ -72,9 +72,9 @@ class AppointmentController extends Controller
 
         $appointment->loadMissing('patient');
         if ($appointment->status === AppointmentStatus::Confirmed) {
-            $appointment->patient->notify(new AppointmentConfirmedNotification($appointment));
+            $appointment->patient?->notify(new AppointmentConfirmedNotification($appointment));
         } else {
-            $appointment->patient->notify(new AppointmentBookedNotification($appointment));
+            $appointment->patient?->notify(new AppointmentBookedNotification($appointment));
         }
 
         return new AppointmentResource($appointment);
@@ -147,7 +147,7 @@ class AppointmentController extends Controller
         $appointment->load(['service']);
 
         $appointment->loadMissing('patient');
-        $appointment->patient->notify(new AppointmentRequestedNotification($appointment));
+        $appointment->patient?->notify(new AppointmentRequestedNotification($appointment));
 
         return (new AppointmentResource($appointment))->response()->setStatusCode(201);
     }
@@ -194,7 +194,7 @@ class AppointmentController extends Controller
         });
 
         $appointment->load(['doctor.user', 'service', 'slot', 'patient']);
-        $appointment->patient->notify(new AppointmentRescheduledNotification($appointment));
+        $appointment->patient?->notify(new AppointmentRescheduledNotification($appointment));
 
         return new AppointmentResource($appointment);
     }

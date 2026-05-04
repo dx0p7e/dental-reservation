@@ -2,15 +2,17 @@
 
 namespace App\Http\Resources\Api\V1;
 
+use App\Models\PatientReview;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/** @mixin PatientReview */
 class ReviewResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        $nameParts = explode(' ', $this->patient?->name ?? '');
-        $first = $nameParts[0] ?? '';
+        $nameParts = explode(' ', $this->patient->name);
+        $first = $nameParts[0];
         $last = isset($nameParts[1]) ? mb_substr($nameParts[1], 0, 1).'.' : '';
         $patientName = trim("$first $last");
 

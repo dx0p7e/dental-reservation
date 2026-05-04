@@ -17,10 +17,10 @@ class LoyaltyPricingService
 
         if ($account) {
             $tier = LoyaltyTier::where('tier', $account->tier)->first();
-            $tierDiscountPct = (float) ($tier?->discount_bonus_pct ?? 0);
+            $tierDiscountPct = (float) ($tier->discount_bonus_pct ?? 0);
 
             $rule = LoyaltyRule::active()->where('service_id', $service->id)->first();
-            $promoDiscountPct = (float) ($rule?->discount_pct ?? 0);
+            $promoDiscountPct = (float) ($rule->discount_pct ?? 0);
         }
 
         $originalPrice = (float) $service->price;
@@ -36,8 +36,8 @@ class LoyaltyPricingService
             discountAmount: $discountAmount,
             finalPrice: $finalPrice,
             pointsToEarn: $pointsToEarn,
-            loyaltyTier: $account?->tier ?? 'standard',
-            pointsBalance: (int) ($account?->points_balance ?? 0),
+            loyaltyTier: $account->tier ?? 'standard',
+            pointsBalance: (int) ($account->points_balance ?? 0),
         );
     }
 }

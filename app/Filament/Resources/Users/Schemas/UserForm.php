@@ -25,7 +25,7 @@ class UserForm
                     ->email()
                     ->required()
                     ->maxLength(255)
-                    ->rule(fn (?Model $record) => Rule::unique('users', 'email')->ignore($record?->id)),
+                    ->rule(fn (?Model $record) => Rule::unique('users', 'email')->ignore($record?->getKey())),
                 TextInput::make('password')
                     ->password()
                     ->revealable()
@@ -69,7 +69,7 @@ class UserForm
                     ->schema([
                         Placeholder::make('loyalty_tier')
                             ->label(__('filament.fields.tier'))
-                            ->content(fn (?User $record): string => $record?->loyaltyAccount?->tier ?? '—'),
+                            ->content(fn (?User $record): string => $record?->loyaltyAccount->tier ?? '—'),
                         Placeholder::make('loyalty_points')
                             ->label(__('filament.fields.points_balance'))
                             ->content(fn (?User $record): string => $record?->loyaltyAccount

@@ -2,10 +2,12 @@
 
 namespace App\Http\Resources\Api\V1;
 
+use App\Models\LoyaltyAccount;
 use App\Models\LoyaltyTier;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/** @mixin LoyaltyAccount */
 class LoyaltyResource extends JsonResource
 {
     /**

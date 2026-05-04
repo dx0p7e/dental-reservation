@@ -27,11 +27,13 @@ class ScheduleSlot extends Model
         'is_booked' => 'boolean',
     ];
 
+    /** @return BelongsTo<Doctor, $this> */
     public function doctor(): BelongsTo
     {
         return $this->belongsTo(Doctor::class);
     }
 
+    /** @return HasOne<Appointment, $this> */
     public function appointment(): HasOne
     {
         return $this->hasOne(Appointment::class, 'slot_id');

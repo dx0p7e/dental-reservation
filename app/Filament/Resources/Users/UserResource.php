@@ -49,12 +49,14 @@ class UserResource extends Resource
 
     public static function getGlobalSearchResultDetails(Model $record): array
     {
+        assert($record instanceof User);
+
         return [__('filament.search.email') => $record->email];
     }
 
     public static function canDelete(Model $record): bool
     {
-        return auth()->id() !== $record->id;
+        return auth()->id() !== $record->getKey();
     }
 
     public static function form(Schema $schema): Schema

@@ -25,7 +25,7 @@ class EditDoctorSchedule extends EditRecord
 
         $overlap = DoctorSchedule::where('doctor_id', $data['doctor_id'])
             ->where('day_of_week', $data['day_of_week'])
-            ->where('id', '!=', $this->record->id)
+            ->where('id', '!=', $this->record->getKey())
             ->where('start_time', '<', $data['end_time'])
             ->where('end_time', '>', $data['start_time'])
             ->exists();

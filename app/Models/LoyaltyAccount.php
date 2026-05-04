@@ -33,11 +33,13 @@ class LoyaltyAccount extends Model
         'points_balance' => 'integer',
     ];
 
+    /** @return BelongsTo<User, $this> */
     public function patient(): BelongsTo
     {
         return $this->belongsTo(User::class, 'patient_id');
     }
 
+    /** @return HasMany<LoyaltyTransaction, $this> */
     public function transactions(): HasMany
     {
         return $this->hasMany(LoyaltyTransaction::class);
