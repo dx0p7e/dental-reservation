@@ -31,7 +31,9 @@ const progressPercent = computed(() => {
   if (!loyalty.value || loyalty.value.next_tier === null || loyalty.value.points_to_next_tier === null) {
     return 100
   }
+
   const threshold = loyalty.value.points_balance + loyalty.value.points_to_next_tier
+
   return threshold > 0 ? Math.round((loyalty.value.points_balance / threshold) * 100) : 0
 })
 

@@ -14,6 +14,7 @@ const error = ref(false)
 async function fetchServices() {
   loading.value = true
   error.value = false
+
   try {
     const { data } = await api.get('/services')
     services.value = data.data ?? data

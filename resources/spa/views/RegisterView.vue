@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
-import { useAuthStore } from '@spa/stores/auth'
 import type { AxiosError } from 'axios'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@spa/stores/auth'
 
 const router = useRouter()
 const { t } = useI18n()
@@ -34,6 +34,7 @@ async function handleSubmit() {
     router.push('/dashboard/appointments')
   } catch (err) {
     const e = err as AxiosError<{ errors?: Record<string, string[]> }>
+
     if (e.response?.status === 422) {
       errors.value = e.response.data.errors ?? {}
     }

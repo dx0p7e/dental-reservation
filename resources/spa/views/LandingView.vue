@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import api from '@spa/api/axios'
-import { useBookingStore } from '@spa/stores/booking'
+import landingBg from '@spa/assets/landing-bg.jpg'
 import AppNavbar from '@spa/components/AppNavbar.vue'
 import DoctorAvatar from '@spa/components/DoctorAvatar.vue'
 import ReviewCard from '@spa/components/ReviewCard.vue'
+import { useBookingStore } from '@spa/stores/booking'
 import type { Doctor, Review, Service } from '@spa/types'
-import landingBg from '@spa/assets/landing-bg.jpg'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -46,11 +46,13 @@ async function submitContactForm() {
   contactErrors.value = {}
   contactServerError.value = ''
   contactLoading.value = true
+
   try {
     await api.post('/contact', contactForm.value)
     contactSuccess.value = true
   } catch (err: unknown) {
     const e = err as { response?: { status?: number; data?: { errors?: FieldErrors; message?: string } } }
+
     if (e.response?.status === 422) {
       contactErrors.value = e.response.data?.errors ?? {}
     } else {
@@ -76,12 +78,14 @@ async function fetchServices() {
 
 onMounted(async () => {
   fetchServices()
+
   try {
     const { data } = await api.get('/doctors')
     doctors.value = data.data ?? data
   } finally {
     loadingDoctors.value = false
   }
+
   try {
     const { data } = await api.get('/reviews')
     reviews.value = (data.data ?? data) as Review[]

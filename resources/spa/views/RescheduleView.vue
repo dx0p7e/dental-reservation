@@ -1,13 +1,13 @@
 <script setup lang="ts">
+import type { AxiosError } from 'axios'
 import { computed, onMounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
 import api from '@spa/api/axios'
+import AppNavbar from '@spa/components/AppNavbar.vue'
 import { useAuthStore } from '@spa/stores/auth'
 import { useBookingStore } from '@spa/stores/booking'
-import AppNavbar from '@spa/components/AppNavbar.vue'
 import type { Appointment, Slot } from '@spa/types'
-import type { AxiosError } from 'axios'
 
 const { t } = useI18n()
 
@@ -32,6 +32,7 @@ onMounted(async () => {
     const apptRes = await api.get(`/appointments/${appointmentId}`)
     appointment.value = apptRes.data.data ?? apptRes.data
     const doctorId = appointment.value?.doctor?.id
+
     if (doctorId) {
       const slotsRes = await api.get(`/doctors/${doctorId}/slots`)
       slots.value = slotsRes.data.data ?? slotsRes.data
@@ -47,14 +48,17 @@ const availableSlots = computed(() =>
 
 const groupedSlots = computed(() => {
   const map = new Map<string, Slot[]>()
+
   for (const slot of availableSlots.value) {
     const existing = map.get(slot.date)
+
     if (existing) {
       existing.push(slot)
     } else {
       map.set(slot.date, [slot])
     }
   }
+
   return map
 })
 
@@ -62,8 +66,10 @@ async function submit() {
   if (!selectedSlotId.value) {
     return
   }
+
   error.value = ''
   submitting.value = true
+
   try {
     await api.patch(`/appointments/${appointmentId}/reschedule`, {
       slot_id: selectedSlotId.value,

@@ -20,6 +20,7 @@ const canReview = computed(
 
 async function fetchReviews() {
   loading.value = true
+
   try {
     const { data } = await api.get<{ data: Review[] }>('/reviews')
     reviews.value = data.data ?? (data as unknown as Review[])

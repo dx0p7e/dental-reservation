@@ -21,6 +21,7 @@ function setRating(value: number) {
 async function submit() {
   errors.value = {}
   submitting.value = true
+
   try {
     const response = await api.post<{ data: Review }>('/reviews', {
       rating: rating.value,
@@ -30,6 +31,7 @@ async function submit() {
     emit('submitted', response.data.data)
   } catch (err: unknown) {
     const e = err as { response?: { status?: number; data?: { message?: string; errors?: Record<string, string[]> } } }
+
     if (e.response?.status === 422 && e.response.data?.errors) {
       errors.value = e.response.data.errors
     } else if (e.response?.status === 409) {

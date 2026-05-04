@@ -31,6 +31,7 @@ export function useActiveSection(sectionIds: string[]) {
 
         for (const id of sectionIds) {
             const el = document.getElementById(id)
+
             if (el) {
                 observer.observe(el)
             }

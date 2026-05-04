@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
-import api from '@spa/api/axios'
-import { useBookingStore } from '@spa/stores/booking'
-import AppNavbar from '@spa/components/AppNavbar.vue'
 import type { AxiosError } from 'axios'
+import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+import api from '@spa/api/axios'
+import AppNavbar from '@spa/components/AppNavbar.vue'
+import { useBookingStore } from '@spa/stores/booking'
 
 const { t } = useI18n()
 
@@ -39,6 +39,7 @@ const backLink = computed(() =>
 onMounted(async () => {
   if (!bookingStore.selectedDoctor || !bookingStore.selectedSlot || !bookingStore.selectedService) {
     router.push('/')
+
     return
   }
 
@@ -50,6 +51,7 @@ onMounted(async () => {
   }
 
   previewLoading.value = true
+
   try {
     const { data } = await api.post('/appointments/preview', {
       doctor_id: bookingStore.selectedDoctor!.id,
@@ -80,6 +82,7 @@ const savedAmount = computed(() => Math.round((originalPrice.value - finalPrice.
 
 function tierLabel(tier: string): string {
   const key = `loyaltyMarketing.tiers.${tier}` as const
+
   return t(key) !== key ? t(key) : tier
 }
 

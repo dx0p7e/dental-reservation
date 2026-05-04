@@ -30,11 +30,13 @@ async function submit() {
   errors.value = {}
   serverError.value = ''
   submitting.value = true
+
   try {
     await api.post('/contact', form.value)
     submitted.value = true
   } catch (err: unknown) {
     const e = err as { response?: { status?: number; data?: { errors?: FieldErrors; message?: string } } }
+
     if (e.response?.status === 422) {
       errors.value = e.response.data?.errors ?? {}
     } else {

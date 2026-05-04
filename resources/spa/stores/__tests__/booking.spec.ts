@@ -7,6 +7,7 @@ import { useBookingStore } from '../booking'
 // ---------------------------------------------------------------------------
 function createLocalStorageMock() {
   let store: Record<string, string> = {}
+
   return {
     getItem: (key: string) => store[key] ?? null,
     setItem: (key: string, value: string) => {
@@ -31,6 +32,7 @@ vi.stubGlobal('localStorage', localStorageMock)
 function futureSlot() {
   const d = new Date()
   d.setDate(d.getDate() + 1)
+
   return {
     id: 99,
     date: d.toISOString().slice(0, 10),

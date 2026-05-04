@@ -1,14 +1,14 @@
 <script setup lang="ts">
+import type { AxiosError } from 'axios'
 import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 import api from '@spa/api/axios'
-import { useAuthStore } from '@spa/stores/auth'
 import AppNavbar from '@spa/components/AppNavbar.vue'
 import PageHeader from '@spa/components/PageHeader.vue'
 import StatusBadge from '@spa/components/StatusBadge.vue'
+import { useAuthStore } from '@spa/stores/auth'
 import type { Appointment } from '@spa/types'
-import type { AxiosError } from 'axios'
 
 const { t } = useI18n()
 
@@ -23,6 +23,7 @@ const successMessage = ref('')
 
 async function fetchAppointments() {
   loading.value = true
+
   try {
     const { data } = await api.get('/appointments')
     appointments.value = data.data ?? data
@@ -35,12 +36,14 @@ onMounted(() => {
   if (route.query.rescheduled === '1') {
     successMessage.value = t('appointments.rescheduled')
   }
+
   fetchAppointments()
 })
 
 async function cancel(id: number) {
   cancelError.value = ''
   cancelling.value = id
+
   try {
     await api.delete(`/appointments/${id}`)
     await fetchAppointments()
@@ -50,10 +53,6 @@ async function cancel(id: number) {
   } finally {
     cancelling.value = null
   }
-}
-
-async function handleLogout() {
-  await authStore.logout()
 }
 
 function canCancel(status: string) {

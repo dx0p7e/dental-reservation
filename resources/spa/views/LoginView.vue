@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import { useI18n } from 'vue-i18n'
-import { useAuthStore } from '@spa/stores/auth'
 import type { AxiosError } from 'axios'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter, useRoute } from 'vue-router'
+import { useAuthStore } from '@spa/stores/auth'
 
 const router = useRouter()
 const route = useRoute()
@@ -27,6 +27,7 @@ async function handleSubmit() {
     router.push(redirect)
   } catch (err) {
     const e = err as AxiosError<{ errors?: Record<string, string[]>; message?: string }>
+
     if (e.response?.status === 422) {
       errors.value = e.response.data.errors ?? {}
     } else {

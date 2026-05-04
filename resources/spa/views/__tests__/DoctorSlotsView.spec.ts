@@ -4,14 +4,17 @@ import type { Slot } from '@spa/types'
 // Inline the groupedSlots logic (mirrors DoctorSlotsView computed)
 function groupSlotsByDate(slots: Slot[]): Map<string, Slot[]> {
   const map = new Map<string, Slot[]>()
+
   for (const slot of slots) {
     const existing = map.get(slot.date)
+
     if (existing) {
       existing.push(slot)
     } else {
       map.set(slot.date, [slot])
     }
   }
+
   return map
 }
 

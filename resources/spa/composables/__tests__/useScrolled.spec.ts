@@ -1,20 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { nextTick } from 'vue'
 import { useScrolled } from '../useScrolled'
 
 describe('useScrolled', () => {
-    let addSpy: ReturnType<typeof vi.spyOn>
     let removeSpy: ReturnType<typeof vi.spyOn>
     let scrollHandler: (() => void) | null = null
 
     beforeEach(() => {
         Object.defineProperty(window, 'scrollY', { value: 0, writable: true, configurable: true })
-
-        addSpy = vi.spyOn(window, 'addEventListener').mockImplementation((event, handler) => {
-            if (event === 'scroll') {
-                scrollHandler = handler as () => void
-            }
-        })
 
         removeSpy = vi.spyOn(window, 'removeEventListener').mockImplementation(() => {})
     })
@@ -36,6 +28,7 @@ describe('useScrolled', () => {
         const TestComponent = defineComponent({
             setup() {
                 const { scrolled } = useScrolled(80)
+
                 return { scrolled }
             },
             template: '<div>{{ scrolled }}</div>',
@@ -54,6 +47,7 @@ describe('useScrolled', () => {
         const TestComponent = defineComponent({
             setup() {
                 const { scrolled } = useScrolled(80)
+
                 return { scrolled }
             },
             template: '<div>{{ scrolled }}</div>',

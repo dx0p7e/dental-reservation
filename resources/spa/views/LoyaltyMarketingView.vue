@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useAuthStore } from '@spa/stores/auth'
 import AppNavbar from '@spa/components/AppNavbar.vue'
+import { useAuthStore } from '@spa/stores/auth'
 
 const { t } = useI18n()
 const authStore = useAuthStore()

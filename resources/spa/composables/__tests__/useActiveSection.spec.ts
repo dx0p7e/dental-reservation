@@ -12,7 +12,9 @@ describe('useActiveSection', () => {
             constructor(callback: IntersectionObserverCallback) {
                 observerCallback = callback
             }
-            observe(el: Element) { observedTargets.push(el) }
+            observe(el: Element) {
+ observedTargets.push(el) 
+}
             disconnect() {}
         }
 
@@ -33,6 +35,7 @@ describe('useActiveSection', () => {
         const TestComponent = defineComponent({
             setup() {
                 const { activeSection } = useActiveSection(['hero', 'services'])
+
                 return { activeSection }
             },
             template: '<div>{{ activeSection ?? "null" }}</div>',
@@ -54,6 +57,7 @@ describe('useActiveSection', () => {
         const TestComponent = defineComponent({
             setup() {
                 const { activeSection } = useActiveSection(['hero', 'services'])
+
                 return { activeSection }
             },
             template: '<div>{{ activeSection ?? "null" }}</div>',

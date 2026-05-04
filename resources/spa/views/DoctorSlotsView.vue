@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
 import api from '@spa/api/axios'
-import { useAuthStore } from '@spa/stores/auth'
-import { useBookingStore } from '@spa/stores/booking'
 import AppNavbar from '@spa/components/AppNavbar.vue'
 import PageHeader from '@spa/components/PageHeader.vue'
+import { useAuthStore } from '@spa/stores/auth'
+import { useBookingStore } from '@spa/stores/booking'
 import type { Doctor, Slot, Service } from '@spa/types'
 
 const { t } = useI18n()
@@ -25,11 +25,14 @@ const loading = ref(true)
 
 async function fetchSlots() {
   loading.value = true
+
   try {
     const params: Record<string, string> = {}
+
     if (selectedDate.value) {
       params.date = selectedDate.value
     }
+
     const { data } = await api.get(`/doctors/${doctorId}/slots`, { params })
     slots.value = data.data ?? data
   } finally {
@@ -54,9 +57,11 @@ onMounted(async () => {
       services.value = data.data ?? data
     }),
   ]
+
   if (bookingStore.selectedDoctor === null) {
     tasks.push(fetchDoctor())
   }
+
   await Promise.all(tasks)
 })
 
@@ -85,14 +90,17 @@ const noSlotsServiceId = computed(() => bookingStore.selectedService?.id ?? '')
 
 const groupedSlots = computed(() => {
   const map = new Map<string, Slot[]>()
+
   for (const slot of slots.value) {
     const existing = map.get(slot.date)
+
     if (existing) {
       existing.push(slot)
     } else {
       map.set(slot.date, [slot])
     }
   }
+
   return map
 })
 </script>

@@ -10,9 +10,11 @@ api.interceptors.request.use((config) => {
   // axios.ts → useAuthStore → api → axios.ts
   // authStore.setToken() always keeps localStorage in sync, so this is always current.
   const token = localStorage.getItem('booking_token')
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
+
   return config
 })
 

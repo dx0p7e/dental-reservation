@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
 import api from '@spa/api/axios'
 import AppNavbar from '@spa/components/AppNavbar.vue'
 import PageHeader from '@spa/components/PageHeader.vue'
@@ -28,6 +28,7 @@ const canSubmit = computed(() => !!serviceId.value && !!preferredDate.value)
 
 onMounted(async () => {
   loading.value = true
+
   try {
     const [servicesRes, profileRes] = await Promise.all([
       api.get('/services'),
@@ -38,8 +39,10 @@ onMounted(async () => {
 
     // Pre-fill from query param
     const queryId = route.query.service_id
+
     if (queryId) {
       const id = Number(queryId)
+
       if (services.value.some(s => s.id === id)) {
         serviceId.value = id
       }
@@ -51,12 +54,15 @@ onMounted(async () => {
 
 async function submit() {
   error.value = ''
+
   if (!serviceId.value || !preferredDate.value) {
     error.value = t('requestBooking.validationError')
+
     return
   }
 
   submitting.value = true
+
   try {
     await api.post('/appointments/request', {
       service_id: serviceId.value,

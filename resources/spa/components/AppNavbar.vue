@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+import { useActiveSection } from '@spa/composables/useActiveSection'
+import { useScrolled } from '@spa/composables/useScrolled'
 import { useAuthStore } from '@spa/stores/auth'
 import { useBookingStore } from '@spa/stores/booking'
-import { useScrolled } from '@spa/composables/useScrolled'
-import { useActiveSection } from '@spa/composables/useActiveSection'
 
-const router = useRouter()
 const route = useRoute()
 const { t, locale } = useI18n()
 const authStore = useAuthStore()
@@ -46,9 +45,11 @@ function isActive(link: { to: string; anchorId: string | null }): boolean {
   if (isLanding.value && link.anchorId !== null) {
     return activeSection.value === link.anchorId
   }
+
   if (link.to === '/') {
     return route.path === '/'
   }
+
   return route.path.startsWith(link.to)
 }
 

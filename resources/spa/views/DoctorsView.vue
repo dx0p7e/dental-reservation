@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { RouterLink, useRouter } from 'vue-router'
 import api from '@spa/api/axios'
+import AppNavbar from '@spa/components/AppNavbar.vue'
+import DoctorAvatar from '@spa/components/DoctorAvatar.vue'
+import PageHeader from '@spa/components/PageHeader.vue'
 import { useAuthStore } from '@spa/stores/auth'
 import { useBookingStore } from '@spa/stores/booking'
-import AppNavbar from '@spa/components/AppNavbar.vue'
-import PageHeader from '@spa/components/PageHeader.vue'
-import DoctorAvatar from '@spa/components/DoctorAvatar.vue'
 import type { Doctor, Service } from '@spa/types'
 
 const { t } = useI18n()
@@ -22,6 +22,7 @@ const selectedServiceId = ref<number | null>(null)
 const uniqueServices = computed<Pick<Service, 'id' | 'name'>[]>(() => {
   const seen = new Set<number>()
   const result: Pick<Service, 'id' | 'name'>[] = []
+
   for (const doctor of doctors.value) {
     for (const service of doctor.services ?? []) {
       if (!seen.has(service.id)) {
@@ -30,6 +31,7 @@ const uniqueServices = computed<Pick<Service, 'id' | 'name'>[]>(() => {
       }
     }
   }
+
   return result
 })
 
@@ -37,6 +39,7 @@ const filteredDoctors = computed<Doctor[]>(() => {
   if (selectedServiceId.value === null) {
     return doctors.value
   }
+
   return doctors.value.filter((d) => d.services?.some((s) => s.id === selectedServiceId.value))
 })
 

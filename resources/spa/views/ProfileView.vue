@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
-import { useI18n } from 'vue-i18n'
-import api from '@spa/api/axios'
-import { useAuthStore } from '@spa/stores/auth'
-import AppNavbar from '@spa/components/AppNavbar.vue'
 import type { AxiosError } from 'axios'
+import { onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+import api from '@spa/api/axios'
+import AppNavbar from '@spa/components/AppNavbar.vue'
+import { useAuthStore } from '@spa/stores/auth'
 
 const { t } = useI18n()
 
@@ -77,6 +77,7 @@ async function saveProfile() {
   profileSuccess.value = ''
   profileError.value = ''
   profileLoading.value = true
+
   try {
     await api.patch('/profile', {
       name: name.value,
@@ -101,9 +102,11 @@ async function resendEmailVerification() {
 
 function startCountdown() {
   countdown.value = 600
+
   if (countdownInterval) {
     clearInterval(countdownInterval)
   }
+
   countdownInterval = setInterval(() => {
     if (countdown.value > 0) {
       countdown.value--
@@ -116,12 +119,14 @@ function startCountdown() {
 function formatCountdown(seconds: number): string {
   const m = Math.floor(seconds / 60).toString().padStart(2, '0')
   const s = (seconds % 60).toString().padStart(2, '0')
+
   return `${m}:${s}`
 }
 
 async function sendOtp() {
   otpError.value = ''
   otpLoading.value = true
+
   try {
     await api.post('/phone/send-otp')
     otpSent.value = true
@@ -137,12 +142,15 @@ async function sendOtp() {
 async function verifyOtp() {
   otpError.value = ''
   otpVerifyLoading.value = true
+
   try {
     await api.post('/phone/verify-otp', { code: otpCode.value })
     otpSuccess.value = t('profile.phoneVerifiedSuccess')
+
     if (countdownInterval) {
       clearInterval(countdownInterval)
     }
+
     await fetchProfile()
   } catch (err) {
     const e = err as AxiosError<{ message?: string }>
@@ -157,6 +165,7 @@ function clearSmartIdPolling() {
     clearInterval(smartIdPollingInterval)
     smartIdPollingInterval = null
   }
+
   smartIdPolling.value = false
   smartIdPollingToken.value = null
   smartIdVerificationCode.value = null
@@ -167,8 +176,10 @@ async function pollSmartId() {
   if (!smartIdPollingToken.value) {
     return
   }
+
   try {
     const { data } = await api.get(`/smart-id/poll/${smartIdPollingToken.value}`)
+
     if (data.status === 'ok') {
       clearSmartIdPolling()
       smartIdVerifiedAt.value = new Date().toISOString()
@@ -192,6 +203,7 @@ async function pollSmartId() {
 async function initiateSmartId() {
   smartIdError.value = ''
   smartIdLoading.value = true
+
   try {
     const { data } = await api.post('/smart-id/initiate', {
       personal_code: smartIdPersonalCode.value,
@@ -203,6 +215,7 @@ async function initiateSmartId() {
     smartIdPollingInterval = setInterval(pollSmartId, 2000)
   } catch (err) {
     const e = err as AxiosError<{ message?: string; errors?: Record<string, string[]> }>
+
     if (e.response?.data?.errors) {
       const firstError = Object.values(e.response.data.errors)[0]
       smartIdError.value = Array.isArray(firstError) ? firstError[0] : firstError
@@ -225,6 +238,7 @@ async function changePassword() {
   passwordSuccess.value = ''
   passwordError.value = ''
   passwordLoading.value = true
+
   try {
     await api.patch('/profile/password', {
       current_password: currentPassword.value,
@@ -237,6 +251,7 @@ async function changePassword() {
     confirmPassword.value = ''
   } catch (err) {
     const e = err as AxiosError<{ message?: string; errors?: Record<string, string[]> }>
+
     if (e.response?.data?.errors) {
       const firstError = Object.values(e.response.data.errors)[0]
       passwordError.value = Array.isArray(firstError) ? firstError[0] : firstError

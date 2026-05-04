@@ -7,17 +7,23 @@ const DRAFT_KEY = 'booking_draft'
 function loadDraft(): BookingDraft | null {
   try {
     const raw = localStorage.getItem(DRAFT_KEY)
+
     if (!raw) {
       return null
     }
+
     const draft = JSON.parse(raw) as BookingDraft
+
     if (!draft.doctor || !draft.slot) {
       return null
     }
+
     if (new Date(`${draft.slot.date}T${draft.slot.start_time}`) <= new Date()) {
       localStorage.removeItem(DRAFT_KEY)
+
       return null
     }
+
     return draft
   } catch {
     return null
@@ -44,8 +50,10 @@ export const useBookingStore = defineStore('booking', () => {
     () => {
       if (!selectedDoctor.value) {
         localStorage.removeItem(DRAFT_KEY)
+
         return
       }
+
       const payload: BookingDraft = {
         doctor: {
           id: selectedDoctor.value.id,
@@ -69,9 +77,11 @@ export const useBookingStore = defineStore('booking', () => {
     if (!selectedDoctor.value) {
       return null
     }
+
     if (!selectedSlot.value || !selectedService.value) {
       return 'slot-selection'
     }
+
     return 'confirmation'
   })
 
