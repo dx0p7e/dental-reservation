@@ -12,9 +12,9 @@ class UserObserver
     {
         if ($user->role === 'patient') {
             LoyaltyAccount::create([
-                'patient_id'     => $user->id,
+                'patient_id' => $user->id,
                 'points_balance' => 0,
-                'tier'           => 'standard',
+                'tier' => 'standard',
             ]);
         }
 

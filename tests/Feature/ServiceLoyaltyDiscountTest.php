@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Doctor;
 use App\Models\LoyaltyRule;
 use App\Models\LoyaltyTier;
 use App\Models\Service;
@@ -86,7 +87,7 @@ test('doctor services endpoint returns promo_discount_pct', function (): void {
     $service = Service::all()->first();
     LoyaltyRule::factory()->create(['service_id' => $service->id, 'discount_pct' => 3.00, 'is_active' => true]);
 
-    $doctor = \App\Models\Doctor::factory()->create(['is_active' => true]);
+    $doctor = Doctor::factory()->create(['is_active' => true]);
     $doctor->services()->attach($service->id);
 
     $this->getJson("/api/v1/doctors/{$doctor->id}/services")

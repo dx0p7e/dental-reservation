@@ -21,10 +21,10 @@ class PatientSeeder extends Seeder
             $user = User::firstOrCreate(
                 ['email' => $data['email']],
                 [
-                    'name'              => $data['name'],
-                    'password'          => Hash::make('password'),
-                    'role'              => 'patient',
-                    'phone'             => $data['phone'],
+                    'name' => $data['name'],
+                    'password' => Hash::make('password'),
+                    'role' => 'patient',
+                    'phone' => $data['phone'],
                     'email_verified_at' => now(),
                 ]
             );

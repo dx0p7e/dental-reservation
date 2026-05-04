@@ -17,8 +17,8 @@ class PhoneVerificationFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id'    => User::factory(),
-            'code'       => str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT),
+            'user_id' => User::factory(),
+            'code' => str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT),
             'expires_at' => now()->addMinutes(10),
             'created_at' => now(),
         ];

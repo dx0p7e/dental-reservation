@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\V1\ServiceResource;
 use App\Models\LoyaltyAccount;
-use App\Models\LoyaltyRule;
 use App\Models\LoyaltyTier;
 use App\Models\Service;
 use Illuminate\Http\Request;

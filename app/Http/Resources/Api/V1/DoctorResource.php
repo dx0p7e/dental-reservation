@@ -14,12 +14,12 @@ class DoctorResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'             => $this->id,
-            'name'           => $this->user->name,
+            'id' => $this->id,
+            'name' => $this->user->name,
             'specialization' => $this->specialization,
-            'bio'            => $this->bio,
-            'photo_url'      => $this->photo_path ? Storage::disk('public')->url($this->photo_path) : null,
-            'services'       => ServiceResource::collection($this->whenLoaded('services')),
+            'bio' => $this->bio,
+            'photo_url' => $this->photo_path ? Storage::disk('public')->url($this->photo_path) : null,
+            'services' => ServiceResource::collection($this->whenLoaded('services')),
         ];
     }
 }

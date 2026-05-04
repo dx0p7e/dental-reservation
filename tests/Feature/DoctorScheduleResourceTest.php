@@ -50,7 +50,7 @@ test('creating a schedule row forces doctor_id to the authenticated doctor', fun
     // Verify that the scoped query only returns records for the authenticated doctor,
     // ensuring that any record created via the form will be associated with the correct doctor.
     $ownSchedule = DoctorSchedule::factory()->create([
-        'doctor_id'   => $doctor->id,
+        'doctor_id' => $doctor->id,
         'day_of_week' => 3,
     ]);
     $results = DoctorScheduleResource::getEloquentQuery()->get();

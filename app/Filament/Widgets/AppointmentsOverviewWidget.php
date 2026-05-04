@@ -19,7 +19,7 @@ class AppointmentsOverviewWidget extends StatsOverviewWidget
         [$start, $end] = $this->dateRange();
 
         $startDate = $start->toDateString();
-        $endDate   = $end->toDateString();
+        $endDate = $end->toDateString();
 
         $coalesceExpr = DB::raw(
             'COALESCE(schedule_slots.date, appointments.preferred_date, DATE(appointments.created_at))'
@@ -29,8 +29,8 @@ class AppointmentsOverviewWidget extends StatsOverviewWidget
             ->leftJoin('schedule_slots', 'schedule_slots.id', '=', 'appointments.slot_id')
             ->whereBetween($coalesceExpr, [$startDate, $endDate]);
 
-        $total     = $baseQuery()->count('appointments.id');
-        $pending   = $baseQuery()->where('appointments.status', AppointmentStatus::Pending)->count('appointments.id');
+        $total = $baseQuery()->count('appointments.id');
+        $pending = $baseQuery()->where('appointments.status', AppointmentStatus::Pending)->count('appointments.id');
         $confirmed = $baseQuery()->where('appointments.status', AppointmentStatus::Confirmed)->count('appointments.id');
         $completed = $baseQuery()->where('appointments.status', AppointmentStatus::Completed)->count('appointments.id');
         $cancelled = $baseQuery()->where('appointments.status', AppointmentStatus::Cancelled)->count('appointments.id');

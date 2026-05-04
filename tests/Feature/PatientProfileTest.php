@@ -5,6 +5,7 @@ use App\Models\PhoneVerification;
 use App\Models\ScheduleSlot;
 use App\Models\Service;
 use App\Models\User;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
 use Laravel\Sanctum\Sanctum;
@@ -17,18 +18,18 @@ beforeEach(function (): void {
 
 test('GET profile returns correct fields for authenticated user', function (): void {
     $user = User::factory()->create([
-        'name'  => 'Jane Doe',
+        'name' => 'Jane Doe',
         'phone' => '+37060000001',
         'notification_channel' => 'sms',
-        'email_verified_at'    => now(),
-        'phone_verified_at'    => now(),
+        'email_verified_at' => now(),
+        'phone_verified_at' => now(),
     ]);
     Sanctum::actingAs($user);
 
     $this->getJson('/api/v1/profile')
         ->assertOk()
         ->assertJsonFragment([
-            'name'  => 'Jane Doe',
+            'name' => 'Jane Doe',
             'phone' => '+37060000001',
             'notification_channel' => 'sms',
         ])
@@ -42,9 +43,9 @@ test('PATCH profile updates name, phone, and notification_channel', function ():
     Sanctum::actingAs($user);
 
     $this->patchJson('/api/v1/profile', [
-        'name'                 => 'Updated Name',
-        'email'                => $user->email,
-        'phone'                => '+37060000001',
+        'name' => 'Updated Name',
+        'email' => $user->email,
+        'phone' => '+37060000001',
         'notification_channel' => 'both',
     ])->assertOk();
 
@@ -58,7 +59,7 @@ test('PATCH profile clears phone_verified_at when phone changes', function (): v
     Sanctum::actingAs($user);
 
     $this->patchJson('/api/v1/profile', [
-        'name'  => $user->name,
+        'name' => $user->name,
         'email' => $user->email,
         'phone' => '+37060000099',
     ])->assertOk();
@@ -71,7 +72,7 @@ test('PATCH profile does not clear phone_verified_at when only name changes', fu
     Sanctum::actingAs($user);
 
     $this->patchJson('/api/v1/profile', [
-        'name'  => 'New Name Only',
+        'name' => 'New Name Only',
         'email' => $user->email,
         'phone' => '+37060000001',
     ])->assertOk();
@@ -86,8 +87,8 @@ test('PATCH profile/password rejects wrong current_password with 422', function 
     Sanctum::actingAs($user);
 
     $this->patchJson('/api/v1/profile/password', [
-        'current_password'      => 'wrong-password',
-        'password'              => 'NewPassword1!',
+        'current_password' => 'wrong-password',
+        'password' => 'NewPassword1!',
         'password_confirmation' => 'NewPassword1!',
     ])->assertUnprocessable();
 });
@@ -97,8 +98,8 @@ test('PATCH profile/password updates password when current_password is correct',
     Sanctum::actingAs($user);
 
     $this->patchJson('/api/v1/profile/password', [
-        'current_password'      => 'correct-password',
-        'password'              => 'NewPassword1!',
+        'current_password' => 'correct-password',
+        'password' => 'NewPassword1!',
         'password_confirmation' => 'NewPassword1!',
     ])->assertOk();
 });
@@ -112,7 +113,7 @@ test('POST email/verification-notification sends notification when email is unve
     $this->postJson('/api/v1/email/verification-notification')
         ->assertOk();
 
-    Notification::assertSentTo($user, \Illuminate\Auth\Notifications\VerifyEmail::class);
+    Notification::assertSentTo($user, VerifyEmail::class);
 });
 
 test('POST email/verification-notification returns 200 when already verified without resending', function (): void {
@@ -122,7 +123,7 @@ test('POST email/verification-notification returns 200 when already verified wit
     $this->postJson('/api/v1/email/verification-notification')
         ->assertOk();
 
-    Notification::assertNotSentTo($user, \Illuminate\Auth\Notifications\VerifyEmail::class);
+    Notification::assertNotSentTo($user, VerifyEmail::class);
 });
 
 // ─── POST /api/v1/phone/send-otp ─────────────────────────────────────────────
@@ -153,8 +154,8 @@ test('POST phone/verify-otp with valid code sets phone_verified_at and deletes O
     Sanctum::actingAs($user);
 
     PhoneVerification::create([
-        'user_id'    => $user->id,
-        'code'       => '123456',
+        'user_id' => $user->id,
+        'code' => '123456',
         'expires_at' => now()->addMinutes(10),
         'created_at' => now(),
     ]);
@@ -171,8 +172,8 @@ test('POST phone/verify-otp with expired code returns 422', function (): void {
     Sanctum::actingAs($user);
 
     PhoneVerification::create([
-        'user_id'    => $user->id,
-        'code'       => '999999',
+        'user_id' => $user->id,
+        'code' => '999999',
         'expires_at' => now()->subMinute(),
         'created_at' => now()->subMinutes(11),
     ]);
@@ -186,8 +187,8 @@ test('POST phone/verify-otp with wrong code returns 422', function (): void {
     Sanctum::actingAs($user);
 
     PhoneVerification::create([
-        'user_id'    => $user->id,
-        'code'       => '111111',
+        'user_id' => $user->id,
+        'code' => '111111',
         'expires_at' => now()->addMinutes(10),
         'created_at' => now(),
     ]);
@@ -208,9 +209,9 @@ test('POST appointments returns 403 when email is unverified', function (): void
     $slot = ScheduleSlot::factory()->create(['doctor_id' => $doctor->id, 'is_booked' => false]);
 
     $this->postJson('/api/v1/appointments', [
-        'doctor_id'  => $doctor->id,
+        'doctor_id' => $doctor->id,
         'service_id' => $service->id,
-        'slot_id'    => $slot->id,
+        'slot_id' => $slot->id,
     ])->assertForbidden();
 });
 
@@ -224,9 +225,9 @@ test('POST appointments returns 403 when phone is unverified', function (): void
     $slot = ScheduleSlot::factory()->create(['doctor_id' => $doctor->id, 'is_booked' => false]);
 
     $this->postJson('/api/v1/appointments', [
-        'doctor_id'  => $doctor->id,
+        'doctor_id' => $doctor->id,
         'service_id' => $service->id,
-        'slot_id'    => $slot->id,
+        'slot_id' => $slot->id,
     ])->assertForbidden();
 });
 
@@ -240,9 +241,9 @@ test('POST appointments proceeds when both email and phone are verified', functi
     $slot = ScheduleSlot::factory()->create(['doctor_id' => $doctor->id, 'is_booked' => false]);
 
     $this->postJson('/api/v1/appointments', [
-        'doctor_id'  => $doctor->id,
+        'doctor_id' => $doctor->id,
         'service_id' => $service->id,
-        'slot_id'    => $slot->id,
+        'slot_id' => $slot->id,
     ])->assertCreated();
 });
 
@@ -254,7 +255,7 @@ test('POST appointments/request returns 403 when either verification is missing'
     $service = Service::factory()->create();
 
     $this->postJson('/api/v1/appointments/request', [
-        'service_id'     => $service->id,
+        'service_id' => $service->id,
         'preferred_date' => now()->addWeek()->toDateString(),
     ])->assertForbidden();
 });

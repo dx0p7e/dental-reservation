@@ -19,11 +19,11 @@ class DoctorFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id'        => User::factory(),
+            'user_id' => User::factory(),
             'specialization' => fake()->word(),
-            'bio'            => fake()->optional()->paragraph(),
-            'photo_path'     => null,
-            'is_active'      => true,
+            'bio' => fake()->optional()->paragraph(),
+            'photo_path' => null,
+            'is_active' => true,
         ];
     }
 }

@@ -34,11 +34,11 @@ test('scoped query only returns the authenticated doctors own appointments', fun
     $otherDoctorUser = makeDoctorUser();
 
     $ownAppointment = Appointment::factory()->create([
-        'doctor_id'  => $doctorUser->doctor->id,
+        'doctor_id' => $doctorUser->doctor->id,
         'patient_id' => User::factory()->create(['role' => 'patient'])->id,
     ]);
     $otherAppointment = Appointment::factory()->create([
-        'doctor_id'  => $otherDoctorUser->doctor->id,
+        'doctor_id' => $otherDoctorUser->doctor->id,
         'patient_id' => User::factory()->create(['role' => 'patient'])->id,
     ]);
 
@@ -53,8 +53,8 @@ test('scoped query only returns the authenticated doctors own appointments', fun
 test('doctor can save doctor_notes on their own appointment', function (): void {
     $doctorUser = makeDoctorUser();
     $appointment = Appointment::factory()->create([
-        'doctor_id'    => $doctorUser->doctor->id,
-        'patient_id'   => User::factory()->create(['role' => 'patient'])->id,
+        'doctor_id' => $doctorUser->doctor->id,
+        'patient_id' => User::factory()->create(['role' => 'patient'])->id,
         'doctor_notes' => null,
     ]);
 
@@ -68,9 +68,9 @@ test('doctor can save doctor_notes on their own appointment', function (): void 
 test('mark complete sets appointment status to completed', function (): void {
     $doctorUser = makeDoctorUser();
     $appointment = Appointment::factory()->create([
-        'doctor_id'  => $doctorUser->doctor->id,
+        'doctor_id' => $doctorUser->doctor->id,
         'patient_id' => User::factory()->create(['role' => 'patient'])->id,
-        'status'     => AppointmentStatus::Confirmed,
+        'status' => AppointmentStatus::Confirmed,
     ]);
 
     $appointment->update(['status' => AppointmentStatus::Completed]);
@@ -81,9 +81,9 @@ test('mark complete sets appointment status to completed', function (): void {
 test('mark no-show sets appointment status to no_show', function (): void {
     $doctorUser = makeDoctorUser();
     $appointment = Appointment::factory()->create([
-        'doctor_id'  => $doctorUser->doctor->id,
+        'doctor_id' => $doctorUser->doctor->id,
         'patient_id' => User::factory()->create(['role' => 'patient'])->id,
-        'status'     => AppointmentStatus::Confirmed,
+        'status' => AppointmentStatus::Confirmed,
     ]);
 
     $appointment->update(['status' => AppointmentStatus::NoShow]);
@@ -95,7 +95,7 @@ test('edit page returns 404 for appointment belonging to another doctor', functi
     $doctorUser = makeDoctorUser();
     $otherDoctorUser = makeDoctorUser();
     $otherAppointment = Appointment::factory()->create([
-        'doctor_id'  => $otherDoctorUser->doctor->id,
+        'doctor_id' => $otherDoctorUser->doctor->id,
         'patient_id' => User::factory()->create(['role' => 'patient'])->id,
     ]);
 

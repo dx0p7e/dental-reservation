@@ -16,14 +16,14 @@ class DoctorScheduleSeeder extends Seeder
             foreach (range(0, 4) as $dayOfWeek) {
                 DoctorSchedule::firstOrCreate(
                     [
-                        'doctor_id'   => $doctor->id,
+                        'doctor_id' => $doctor->id,
                         'day_of_week' => $dayOfWeek,
                     ],
                     [
-                        'start_time'            => '09:00',
-                        'end_time'              => '17:00',
+                        'start_time' => '09:00',
+                        'end_time' => '17:00',
                         'slot_duration_minutes' => 30,
-                        'is_active'             => true,
+                        'is_active' => true,
                     ]
                 );
             }

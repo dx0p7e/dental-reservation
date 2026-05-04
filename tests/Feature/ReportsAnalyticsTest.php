@@ -34,15 +34,15 @@ test('appointments overview widget counts appointments in the current month via 
     // Two appointments this month via slot date
     Appointment::factory()->count(2)->create([
         'patient_id' => $patient->id,
-        'slot_id'    => ScheduleSlot::factory()->create(['date' => now()->startOfMonth()->addDays(1)->toDateString()])->id,
-        'status'     => AppointmentStatus::Pending,
+        'slot_id' => ScheduleSlot::factory()->create(['date' => now()->startOfMonth()->addDays(1)->toDateString()])->id,
+        'status' => AppointmentStatus::Pending,
     ]);
 
     // One appointment outside this month — should not be counted
     Appointment::factory()->create([
         'patient_id' => $patient->id,
-        'slot_id'    => ScheduleSlot::factory()->create(['date' => now()->subMonths(2)->toDateString()])->id,
-        'status'     => AppointmentStatus::Pending,
+        'slot_id' => ScheduleSlot::factory()->create(['date' => now()->subMonths(2)->toDateString()])->id,
+        'status' => AppointmentStatus::Pending,
     ]);
 
     Livewire::test(AppointmentsOverviewWidget::class, ['pageFilters' => ['period' => 'this_month']])
@@ -55,20 +55,20 @@ test('appointments overview widget counts request-based appointments via preferr
 
     // Request-based appointment (no slot) with preferred_date this month
     Appointment::factory()->create([
-        'patient_id'     => $patient->id,
-        'slot_id'        => null,
-        'doctor_id'      => null,
+        'patient_id' => $patient->id,
+        'slot_id' => null,
+        'doctor_id' => null,
         'preferred_date' => now()->startOfMonth()->addDays(3)->toDateString(),
-        'status'         => AppointmentStatus::Pending,
+        'status' => AppointmentStatus::Pending,
     ]);
 
     // Request-based appointment preferred_date last month — should not be counted
     Appointment::factory()->create([
-        'patient_id'     => $patient->id,
-        'slot_id'        => null,
-        'doctor_id'      => null,
+        'patient_id' => $patient->id,
+        'slot_id' => null,
+        'doctor_id' => null,
         'preferred_date' => now()->subMonths(1)->startOfMonth()->toDateString(),
-        'status'         => AppointmentStatus::Pending,
+        'status' => AppointmentStatus::Pending,
     ]);
 
     Livewire::test(AppointmentsOverviewWidget::class, ['pageFilters' => ['period' => 'this_month']])
@@ -86,16 +86,16 @@ test('revenue estimate widget sums service prices for completed appointments in 
     Appointment::factory()->count(2)->create([
         'patient_id' => $patient->id,
         'service_id' => $service->id,
-        'slot_id'    => ScheduleSlot::factory()->create(['date' => now()->startOfMonth()->addDays(2)->toDateString()])->id,
-        'status'     => AppointmentStatus::Completed,
+        'slot_id' => ScheduleSlot::factory()->create(['date' => now()->startOfMonth()->addDays(2)->toDateString()])->id,
+        'status' => AppointmentStatus::Completed,
     ]);
 
     // Completed appointment outside this month — should not be included
     Appointment::factory()->create([
         'patient_id' => $patient->id,
         'service_id' => $service->id,
-        'slot_id'    => ScheduleSlot::factory()->create(['date' => now()->subMonths(2)->toDateString()])->id,
-        'status'     => AppointmentStatus::Completed,
+        'slot_id' => ScheduleSlot::factory()->create(['date' => now()->subMonths(2)->toDateString()])->id,
+        'status' => AppointmentStatus::Completed,
     ]);
 
     Livewire::test(RevenueEstimateWidget::class, ['pageFilters' => ['period' => 'this_month']])

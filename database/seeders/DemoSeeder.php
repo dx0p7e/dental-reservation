@@ -27,9 +27,9 @@ class DemoSeeder extends Seeder
         $admin = User::firstOrCreate(
             ['email' => 'admin@klinika.lt'],
             [
-                'name'              => 'Klinikos Administratorius',
-                'password'          => Hash::make('password'),
-                'role'              => 'admin',
+                'name' => 'Klinikos Administratorius',
+                'password' => Hash::make('password'),
+                'role' => 'admin',
                 'email_verified_at' => now(),
             ]
         );

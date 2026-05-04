@@ -14,10 +14,10 @@ beforeEach(function (): void {
 test('GET reviews returns 200 with data array', function (): void {
     $patient = User::factory()->create(['name' => 'Jonas Simonaitis']);
     PatientReview::factory()->create([
-        'patient_id'   => $patient->id,
-        'rating'       => 5,
-        'title'        => 'Puiku',
-        'body'         => 'Labai gera klinika ir malonus personalas.',
+        'patient_id' => $patient->id,
+        'rating' => 5,
+        'title' => 'Puiku',
+        'body' => 'Labai gera klinika ir malonus personalas.',
         'is_published' => true,
     ]);
 
@@ -29,9 +29,9 @@ test('GET reviews returns 200 with data array', function (): void {
 test('GET reviews anonymises patient name to first name and last initial', function (): void {
     $patient = User::factory()->create(['name' => 'Jonas Simonaitis']);
     PatientReview::factory()->create([
-        'patient_id'   => $patient->id,
-        'rating'       => 5,
-        'body'         => 'Gera klinika, rekomenduoju visiems draugams.',
+        'patient_id' => $patient->id,
+        'rating' => 5,
+        'body' => 'Gera klinika, rekomenduoju visiems draugams.',
         'is_published' => true,
     ]);
 
@@ -42,19 +42,19 @@ test('GET reviews anonymises patient name to first name and last initial', funct
 });
 
 test('GET reviews excludes unpublished reviews', function (): void {
-    $published   = User::factory()->create(['name' => 'Egle Mikalauskaite']);
+    $published = User::factory()->create(['name' => 'Egle Mikalauskaite']);
     $unpublished = User::factory()->create(['name' => 'Ruta Jankunaite']);
 
     PatientReview::factory()->create([
-        'patient_id'   => $published->id,
-        'rating'       => 5,
-        'body'         => 'Labai gera klinika ir malonus personalas.',
+        'patient_id' => $published->id,
+        'rating' => 5,
+        'body' => 'Labai gera klinika ir malonus personalas.',
         'is_published' => true,
     ]);
     PatientReview::factory()->create([
-        'patient_id'   => $unpublished->id,
-        'rating'       => 4,
-        'body'         => 'Patenkinta paslauga, rekomenduosiu draugams.',
+        'patient_id' => $unpublished->id,
+        'rating' => 4,
+        'body' => 'Patenkinta paslauga, rekomenduosiu draugams.',
         'is_published' => false,
     ]);
 
@@ -73,8 +73,8 @@ test('POST reviews creates a review and returns 201', function (): void {
 
     $this->postJson('/api/v1/reviews', [
         'rating' => 5,
-        'title'  => 'Puiku!',
-        'body'   => 'Labai patenkinta apsilankymu, rekomenduosiu draugams.',
+        'title' => 'Puiku!',
+        'body' => 'Labai patenkinta apsilankymu, rekomenduosiu draugams.',
     ])->assertCreated()
         ->assertJsonStructure(['data' => ['id', 'rating', 'title', 'body', 'patient_name', 'created_at']]);
 
@@ -88,12 +88,12 @@ test('POST reviews returns 409 when patient already reviewed', function (): void
 
     PatientReview::factory()->create([
         'patient_id' => $patient->id,
-        'body'       => 'Labai gera klinika ir malonus personalas.',
+        'body' => 'Labai gera klinika ir malonus personalas.',
     ]);
 
     $this->postJson('/api/v1/reviews', [
         'rating' => 4,
-        'body'   => 'Antrasis bandymas palikti atsiliepimą.',
+        'body' => 'Antrasis bandymas palikti atsiliepimą.',
     ])->assertStatus(409);
 });
 
@@ -103,7 +103,7 @@ test('POST reviews returns 422 on invalid rating', function (): void {
 
     $this->postJson('/api/v1/reviews', [
         'rating' => 6,
-        'body'   => 'Kažkoks tekstas atsiliepimui apie kliniką.',
+        'body' => 'Kažkoks tekstas atsiliepimui apie kliniką.',
     ])->assertUnprocessable()
         ->assertJsonValidationErrors(['rating']);
 });
@@ -114,7 +114,7 @@ test('POST reviews returns 422 when body is too short', function (): void {
 
     $this->postJson('/api/v1/reviews', [
         'rating' => 4,
-        'body'   => 'Trumpa',
+        'body' => 'Trumpa',
     ])->assertUnprocessable()
         ->assertJsonValidationErrors(['body']);
 });
@@ -122,6 +122,6 @@ test('POST reviews returns 422 when body is too short', function (): void {
 test('POST reviews returns 401 when unauthenticated', function (): void {
     $this->postJson('/api/v1/reviews', [
         'rating' => 5,
-        'body'   => 'Labai patenkinta apsilankymu klinikoje, rekomenduosiu.',
+        'body' => 'Labai patenkinta apsilankymu klinikoje, rekomenduosiu.',
     ])->assertUnauthorized();
 });

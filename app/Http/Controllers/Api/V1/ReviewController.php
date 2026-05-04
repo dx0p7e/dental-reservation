@@ -26,8 +26,8 @@ class ReviewController extends Controller
     {
         $validated = $request->validate([
             'rating' => ['required', 'integer', 'min:1', 'max:5'],
-            'body'   => ['required', 'string', 'min:10', 'max:1000'],
-            'title'  => ['nullable', 'string', 'max:150'],
+            'body' => ['required', 'string', 'min:10', 'max:1000'],
+            'title' => ['nullable', 'string', 'max:150'],
         ]);
 
         if ($request->user()->review()->exists()) {
@@ -36,9 +36,9 @@ class ReviewController extends Controller
 
         $review = PatientReview::create([
             'patient_id' => $request->user()->id,
-            'rating'     => $validated['rating'],
-            'body'       => $validated['body'],
-            'title'      => $validated['title'] ?? null,
+            'rating' => $validated['rating'],
+            'body' => $validated['body'],
+            'title' => $validated['title'] ?? null,
         ]);
 
         return (new ReviewResource($review->load('patient')))->response()->setStatusCode(201);

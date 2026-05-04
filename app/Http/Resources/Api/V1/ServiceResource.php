@@ -13,13 +13,13 @@ class ServiceResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'                   => $this->id,
-            'name'                 => $this->name,
-            'description'          => $this->description,
-            'duration_minutes'     => $this->duration_minutes,
-            'price'                => $this->price,
+            'id' => $this->id,
+            'name' => $this->name,
+            'description' => $this->description,
+            'duration_minutes' => $this->duration_minutes,
+            'price' => $this->price,
             'loyalty_discount_pct' => $request->attributes->get('loyalty_discount_pct'),
-            'promo_discount_pct'   => $this->whenLoaded('loyaltyRule', fn ($rule) => $rule ? (float) $rule->discount_pct : null, null),
+            'promo_discount_pct' => $this->whenLoaded('loyaltyRule', fn ($rule) => $rule ? (float) $rule->discount_pct : null, null),
         ];
     }
 }

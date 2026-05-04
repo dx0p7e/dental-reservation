@@ -21,8 +21,8 @@ it('POST /api/v1/contact with valid data sends mail and returns 200', function (
     Mail::fake();
 
     $this->postJson('/api/v1/contact', [
-        'name'    => 'Jonas Jonaitis',
-        'email'   => 'jonas@example.com',
+        'name' => 'Jonas Jonaitis',
+        'email' => 'jonas@example.com',
         'subject' => 'Klausimas',
         'message' => 'Norėčiau sužinoti daugiau apie paslaugas.',
     ])->assertOk()->assertJson(['message' => 'Sent']);
@@ -42,8 +42,8 @@ it('POST /api/v1/contact rate limits after 5 requests from same IP', function ()
     Mail::fake();
 
     $payload = [
-        'name'    => 'Test User',
-        'email'   => 'test@example.com',
+        'name' => 'Test User',
+        'email' => 'test@example.com',
         'subject' => 'Test',
         'message' => 'Test message',
     ];
@@ -54,4 +54,3 @@ it('POST /api/v1/contact rate limits after 5 requests from same IP', function ()
 
     $this->postJson('/api/v1/contact', $payload)->assertStatus(429);
 });
-

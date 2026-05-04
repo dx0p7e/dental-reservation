@@ -12,28 +12,28 @@ class ReviewSeeder extends Seeder
     {
         $reviews = [
             [
-                'email'  => 'jonas.s@example.lt',
+                'email' => 'jonas.s@example.lt',
                 'rating' => 5,
-                'title'  => 'Puiki klinika!',
-                'body'   => 'Labai patenkinta apsilankymu. Gydytoja buvo draugiška ir profesionali, procedūra praėjo sklandžiai. Drąsiai rekomenduoju šią kliniką visiems, kurie ieško patikimos odontologijos paslaugų.',
+                'title' => 'Puiki klinika!',
+                'body' => 'Labai patenkinta apsilankymu. Gydytoja buvo draugiška ir profesionali, procedūra praėjo sklandžiai. Drąsiai rekomenduoju šią kliniką visiems, kurie ieško patikimos odontologijos paslaugų.',
             ],
             [
-                'email'  => 'egle.m@example.lt',
+                'email' => 'egle.m@example.lt',
                 'rating' => 5,
-                'title'  => 'Rekomenduoju visiems',
-                'body'   => 'Dantų balinimo procedūra buvo atlikta profesionaliai ir greitai. Rezultatu esu labai patenkinta – dantys atrodo puikiai. Personalas malonus ir paslaugus, laukiamasis švarus ir jaukus.',
+                'title' => 'Rekomenduoju visiems',
+                'body' => 'Dantų balinimo procedūra buvo atlikta profesionaliai ir greitai. Rezultatu esu labai patenkinta – dantys atrodo puikiai. Personalas malonus ir paslaugus, laukiamasis švarus ir jaukus.',
             ],
             [
-                'email'  => 'ruta.j@example.lt',
+                'email' => 'ruta.j@example.lt',
                 'rating' => 4,
-                'title'  => 'Gera patirtis',
-                'body'   => 'Šaknies kanalo gydymas vyko be didelio skausmo, gydytojas aiškiai paaiškino kiekvieną žingsnį. Laukimo laikas buvo šiek tiek ilgesnis nei tikėtasi, tačiau bendra patirtis teigiama.',
+                'title' => 'Gera patirtis',
+                'body' => 'Šaknies kanalo gydymas vyko be didelio skausmo, gydytojas aiškiai paaiškino kiekvieną žingsnį. Laukimo laikas buvo šiek tiek ilgesnis nei tikėtasi, tačiau bendra patirtis teigiama.',
             ],
             [
-                'email'  => 'andrius.b@example.lt',
+                'email' => 'andrius.b@example.lt',
                 'rating' => 5,
-                'title'  => 'Profesionalūs gydytojai',
-                'body'   => 'Vaiko pirmasis apsilankymas pas odontologą praėjo labai gerai – gydytoja buvo kantri ir draugiška, vaikas nesibijojo. Tikrai grįšime ir rekomenduosime draugams.',
+                'title' => 'Profesionalūs gydytojai',
+                'body' => 'Vaiko pirmasis apsilankymas pas odontologą praėjo labai gerai – gydytoja buvo kantri ir draugiška, vaikas nesibijojo. Tikrai grįšime ir rekomenduosime draugams.',
             ],
         ];
 
@@ -47,13 +47,12 @@ class ReviewSeeder extends Seeder
             PatientReview::firstOrCreate(
                 ['patient_id' => $patient->id],
                 [
-                    'rating'       => $data['rating'],
-                    'title'        => $data['title'],
-                    'body'         => $data['body'],
+                    'rating' => $data['rating'],
+                    'title' => $data['title'],
+                    'body' => $data['body'],
                     'is_published' => true,
                 ]
             );
         }
     }
 }
-

@@ -173,9 +173,9 @@ test('appointment resource returns null slot and doctor for request-based appoin
     Appointment::factory()->create([
         'patient_id' => $patient->id,
         'service_id' => $service->id,
-        'slot_id'    => null,
-        'doctor_id'  => null,
-        'status'     => AppointmentStatus::Pending,
+        'slot_id' => null,
+        'doctor_id' => null,
+        'status' => AppointmentStatus::Pending,
     ]);
 
     $response = $this->getJson('/api/v1/appointments')->assertOk();

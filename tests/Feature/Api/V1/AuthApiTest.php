@@ -10,11 +10,11 @@ beforeEach(function (): void {
 
 test('register creates a patient and returns a token', function (): void {
     $response = $this->postJson('/api/v1/auth/register', [
-        'name'                  => 'Test Patient',
-        'email'                 => 'patient@example.com',
-        'password'              => 'Password123!',
+        'name' => 'Test Patient',
+        'email' => 'patient@example.com',
+        'password' => 'Password123!',
         'password_confirmation' => 'Password123!',
-        'gdpr_consent'          => true,
+        'gdpr_consent' => true,
     ]);
 
     $response->assertCreated()
@@ -28,7 +28,7 @@ test('login returns a token for a patient', function (): void {
     $user->assignRole('patient');
 
     $response = $this->postJson('/api/v1/auth/login', [
-        'email'    => $user->email,
+        'email' => $user->email,
         'password' => 'Password123!',
     ]);
 
@@ -41,7 +41,7 @@ test('non-patient login is rejected with 403', function (): void {
     $admin->assignRole('admin');
 
     $this->postJson('/api/v1/auth/login', [
-        'email'    => $admin->email,
+        'email' => $admin->email,
         'password' => 'Password123!',
     ])->assertForbidden();
 });

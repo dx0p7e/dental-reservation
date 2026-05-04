@@ -48,4 +48,3 @@ test('slots endpoint supports date filter', function (): void {
         ->assertOk()
         ->assertJsonCount(1, 'data');
 });
-

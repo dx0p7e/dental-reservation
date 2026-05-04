@@ -20,7 +20,7 @@ trait HasPeriodFilter
         $period = $this->pageFilters['period'] ?? 'this_month';
 
         return match ($period) {
-            'last_month'   => [
+            'last_month' => [
                 Carbon::now()->subMonthNoOverflow()->startOfMonth(),
                 Carbon::now()->subMonthNoOverflow()->endOfMonth(),
             ],
@@ -28,7 +28,7 @@ trait HasPeriodFilter
                 Carbon::now()->subDays(30)->startOfDay(),
                 Carbon::now()->endOfDay(),
             ],
-            'all_time'     => [
+            'all_time' => [
                 Carbon::createFromTimestamp(0),
                 Carbon::now()->endOfDay(),
             ],

@@ -26,9 +26,9 @@ class ServiceSeeder extends Seeder
                 ['name' => $data['name']],
                 [
                     'duration_minutes' => $data['duration_minutes'],
-                    'price'            => $data['price'],
-                    'complexity'       => $data['complexity'],
-                    'description'      => $data['description'],
+                    'price' => $data['price'],
+                    'complexity' => $data['complexity'],
+                    'description' => $data['description'],
                 ]
             );
 
@@ -36,9 +36,9 @@ class ServiceSeeder extends Seeder
                 ['service_id' => $service->id],
                 [
                     'points_earned' => (int) round($data['price']),
-                    'discount_pct'  => $data['promo_pct'],
-                    'valid_months'  => $data['valid_months'],
-                    'is_active'     => true,
+                    'discount_pct' => $data['promo_pct'],
+                    'valid_months' => $data['valid_months'],
+                    'is_active' => true,
                 ]
             );
         }

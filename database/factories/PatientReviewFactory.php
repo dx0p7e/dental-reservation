@@ -18,10 +18,10 @@ class PatientReviewFactory extends Factory
     public function definition(): array
     {
         return [
-            'patient_id'   => null,
-            'rating'       => fake()->numberBetween(4, 5),
-            'title'        => null,
-            'body'         => fake()->paragraph(),
+            'patient_id' => null,
+            'rating' => fake()->numberBetween(4, 5),
+            'title' => null,
+            'body' => fake()->paragraph(),
             'is_published' => true,
         ];
     }

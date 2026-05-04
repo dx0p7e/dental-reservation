@@ -45,10 +45,10 @@ class LoyaltySeeder extends Seeder
                     LoyaltyTransaction::firstOrCreate(
                         [
                             'loyalty_account_id' => $account->id,
-                            'appointment_id'     => $appointment->id,
+                            'appointment_id' => $appointment->id,
                         ],
                         [
-                            'type'         => 'earn',
+                            'type' => 'earn',
                             'points_delta' => $rule->points_earned,
                         ]
                     );
@@ -58,7 +58,7 @@ class LoyaltySeeder extends Seeder
             // Set balance and tier explicitly per spec table
             $account->update([
                 'points_balance' => $data['points_balance'],
-                'tier'           => $data['tier'],
+                'tier' => $data['tier'],
             ]);
         }
     }

@@ -9,8 +9,8 @@ use App\Models\ScheduleSlot;
 use App\Models\Service;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
-use Filament\Schemas\Components\Utilities\Get;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Utilities\Get;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -66,11 +66,11 @@ class ConfirmAppointmentRequestAction
                     $finalPrice = round($service->price * (1 - $discountPct / 100), 2);
 
                     $record->update([
-                        'doctor_id'    => $data['doctor_id'],
-                        'slot_id'      => $data['slot_id'],
-                        'status'       => AppointmentStatus::Confirmed,
+                        'doctor_id' => $data['doctor_id'],
+                        'slot_id' => $data['slot_id'],
+                        'status' => AppointmentStatus::Confirmed,
                         'discount_pct' => $discountPct,
-                        'final_price'  => $finalPrice,
+                        'final_price' => $finalPrice,
                     ]);
 
                     ScheduleSlot::find($data['slot_id'])->update(['is_booked' => true]);

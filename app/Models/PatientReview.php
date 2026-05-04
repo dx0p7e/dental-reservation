@@ -21,7 +21,7 @@ class PatientReview extends Model
     protected function casts(): array
     {
         return [
-            'rating'       => 'integer',
+            'rating' => 'integer',
             'is_published' => 'boolean',
         ];
     }

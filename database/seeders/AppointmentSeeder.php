@@ -34,9 +34,9 @@ class AppointmentSeeder extends Seeder
         }
 
         // Patients
-        $jonas   = User::where('email', 'jonas.s@example.lt')->first();
-        $egle    = User::where('email', 'egle.m@example.lt')->first();
-        $ruta    = User::where('email', 'ruta.j@example.lt')->first();
+        $jonas = User::where('email', 'jonas.s@example.lt')->first();
+        $egle = User::where('email', 'egle.m@example.lt')->first();
+        $ruta = User::where('email', 'ruta.j@example.lt')->first();
         $andrius = User::where('email', 'andrius.b@example.lt')->first();
 
         // Doctors (looked up by their linked user email)
@@ -46,15 +46,15 @@ class AppointmentSeeder extends Seeder
 
         // Services
         $teethCleaning = Service::where('name', 'Dantų valymas (higiena)')->first();
-        $dentalExam    = Service::where('name', 'Dantų apžiūra ir rentgenas')->first();
-        $toothFilling  = Service::where('name', 'Dantų plombavimas (kompozitas)')->first();
-        $extraction    = Service::where('name', 'Danties šalinimas')->first();
-        $rootCanal     = Service::where('name', 'Šaknies kanalo gydymas')->first();
-        $whitening     = Service::where('name', 'Dantų balinimas')->first();
-        $crown         = Service::where('name', 'Dantų karūnėlė')->first();
+        $dentalExam = Service::where('name', 'Dantų apžiūra ir rentgenas')->first();
+        $toothFilling = Service::where('name', 'Dantų plombavimas (kompozitas)')->first();
+        $extraction = Service::where('name', 'Danties šalinimas')->first();
+        $rootCanal = Service::where('name', 'Šaknies kanalo gydymas')->first();
+        $whitening = Service::where('name', 'Dantų balinimas')->first();
+        $crown = Service::where('name', 'Dantų karūnėlė')->first();
         $childrenCheck = Service::where('name', 'Vaikų dantų apžiūra')->first();
 
-        $past   = $pastDay->toDateString();
+        $past = $pastDay->toDateString();
         $future = $futureDay->toDateString();
 
         // 2 past completed appointments per patient (all on last past weekday)
@@ -82,11 +82,11 @@ class AppointmentSeeder extends Seeder
             Appointment::firstOrCreate(
                 ['patient_id' => $data['patient']->id, 'slot_id' => $slot->id],
                 [
-                    'doctor_id'   => $data['doctor']->id,
-                    'service_id'  => $data['service']->id,
-                    'status'      => AppointmentStatus::Completed,
+                    'doctor_id' => $data['doctor']->id,
+                    'service_id' => $data['service']->id,
+                    'status' => AppointmentStatus::Completed,
                     'discount_pct' => 0,
-                    'final_price'  => $data['service']->price,
+                    'final_price' => $data['service']->price,
                 ]
             );
 
@@ -103,9 +103,9 @@ class AppointmentSeeder extends Seeder
             Appointment::firstOrCreate(
                 ['patient_id' => $jonas->id, 'slot_id' => $noShowSlot->id],
                 [
-                    'doctor_id'  => $aiste->id,
+                    'doctor_id' => $aiste->id,
                     'service_id' => $teethCleaning->id,
-                    'status'     => AppointmentStatus::NoShow,
+                    'status' => AppointmentStatus::NoShow,
                 ]
             );
             $noShowSlot->update(['is_booked' => true]);
@@ -132,9 +132,9 @@ class AppointmentSeeder extends Seeder
             Appointment::firstOrCreate(
                 ['patient_id' => $data['patient']->id, 'slot_id' => $slot->id],
                 [
-                    'doctor_id'  => $data['doctor']->id,
+                    'doctor_id' => $data['doctor']->id,
                     'service_id' => $data['service']->id,
-                    'status'     => AppointmentStatus::Confirmed,
+                    'status' => AppointmentStatus::Confirmed,
                 ]
             );
 
@@ -144,26 +144,26 @@ class AppointmentSeeder extends Seeder
         // 2 pending request appointments (no slot, preferred_date only)
         Appointment::firstOrCreate(
             [
-                'patient_id'     => $egle->id,
-                'doctor_id'      => $tomas->id,
+                'patient_id' => $egle->id,
+                'doctor_id' => $tomas->id,
                 'preferred_date' => $pendingDay->toDateString(),
             ],
             [
-                'service_id'     => $dentalExam->id,
-                'status'         => AppointmentStatus::Pending,
+                'service_id' => $dentalExam->id,
+                'status' => AppointmentStatus::Pending,
                 'preferred_date' => $pendingDay->toDateString(),
             ]
         );
 
         Appointment::firstOrCreate(
             [
-                'patient_id'     => $andrius->id,
-                'doctor_id'      => $aiste->id,
+                'patient_id' => $andrius->id,
+                'doctor_id' => $aiste->id,
                 'preferred_date' => $pendingDay->toDateString(),
             ],
             [
-                'service_id'     => $crown->id,
-                'status'         => AppointmentStatus::Pending,
+                'service_id' => $crown->id,
+                'status' => AppointmentStatus::Pending,
                 'preferred_date' => $pendingDay->toDateString(),
             ]
         );

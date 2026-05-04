@@ -15,12 +15,12 @@ class ReviewResource extends JsonResource
         $patientName = trim("$first $last");
 
         return [
-            'id'           => $this->id,
-            'rating'       => $this->rating,
-            'title'        => $this->title,
-            'body'         => $this->body,
+            'id' => $this->id,
+            'rating' => $this->rating,
+            'title' => $this->title,
+            'body' => $this->body,
             'patient_name' => $patientName,
-            'created_at'   => $this->created_at->toISOString(),
+            'created_at' => $this->created_at->toISOString(),
         ];
     }
 }

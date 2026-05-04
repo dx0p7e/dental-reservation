@@ -23,7 +23,7 @@ class ContactFormMail extends Mailable
     {
         return new Envelope(
             replyTo: [$this->senderEmail => $this->senderName],
-            subject: '[Contact Form] ' . $this->emailSubject,
+            subject: '[Contact Form] '.$this->emailSubject,
         );
     }
 

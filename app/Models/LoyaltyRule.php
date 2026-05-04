@@ -24,9 +24,9 @@ class LoyaltyRule extends Model
 
     protected $casts = [
         'points_earned' => 'integer',
-        'discount_pct'  => 'decimal:2',
-        'valid_months'  => 'integer',
-        'is_active'     => 'boolean',
+        'discount_pct' => 'decimal:2',
+        'valid_months' => 'integer',
+        'is_active' => 'boolean',
     ];
 
     public function scopeActive(Builder $query): void

@@ -18,7 +18,7 @@ class LoyaltyTier extends Model
     ];
 
     protected $casts = [
-        'points_threshold'  => 'integer',
+        'points_threshold' => 'integer',
         'discount_bonus_pct' => 'decimal:2',
     ];
 }

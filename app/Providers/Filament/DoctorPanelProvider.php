@@ -2,11 +2,11 @@
 
 namespace App\Providers\Filament;
 
+use App\Http\Middleware\SetFilamentLocale;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use App\Http\Middleware\SetFilamentLocale;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;

@@ -24,8 +24,8 @@ class PhoneVerificationController extends Controller
         $code = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
         PhoneVerification::create([
-            'user_id'    => $user->id,
-            'code'       => $code,
+            'user_id' => $user->id,
+            'code' => $code,
             'expires_at' => now()->addMinutes(10),
             'created_at' => now(),
         ]);

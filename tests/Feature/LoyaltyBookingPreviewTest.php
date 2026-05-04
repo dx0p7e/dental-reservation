@@ -216,9 +216,9 @@ it('does not apply promo discount from an expired rule', function (): void {
 
     // Rule expired: created 2 months ago with valid_months = 1
     $rule = LoyaltyRule::factory()->create([
-        'service_id'  => $service->id,
+        'service_id' => $service->id,
         'discount_pct' => 10.00,
-        'is_active'    => true,
+        'is_active' => true,
         'valid_months' => 1,
         'points_earned' => 0,
     ]);
@@ -236,9 +236,9 @@ it('does not apply promo discount when rule is_active = false', function (): voi
     $service = Service::factory()->create(['price' => '100.00']);
 
     LoyaltyRule::factory()->create([
-        'service_id'   => $service->id,
+        'service_id' => $service->id,
         'discount_pct' => 10.00,
-        'is_active'    => false,
+        'is_active' => false,
         'points_earned' => 0,
     ]);
 

@@ -29,7 +29,7 @@ class RevenueEstimateWidget extends StatsOverviewWidget
             ->sum('services.price');
 
         return [
-            Stat::make(__('filament.widgets.estimated_revenue'), '£' . number_format((float) $revenue, 2))
+            Stat::make(__('filament.widgets.estimated_revenue'), '£'.number_format((float) $revenue, 2))
                 ->description(__('filament.widgets.revenue_description')),
         ];
     }

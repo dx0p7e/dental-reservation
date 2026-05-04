@@ -45,4 +45,3 @@ test('unauthenticated request returns 401', function (): void {
     $this->getJson('/api/v1/loyalty')
         ->assertUnauthorized();
 });
-

@@ -13,14 +13,14 @@ class StoreAppointmentRequestRequest extends FormRequest
     }
 
     /**
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'service_id'     => ['required', 'integer', 'exists:services,id'],
+            'service_id' => ['required', 'integer', 'exists:services,id'],
             'preferred_date' => ['required', 'date', 'after_or_equal:today'],
-            'notes'          => ['nullable', 'string', 'max:1000'],
+            'notes' => ['nullable', 'string', 'max:1000'],
         ];
     }
 }

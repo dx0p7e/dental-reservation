@@ -18,12 +18,12 @@ class AppointmentFactory extends Factory
     public function definition(): array
     {
         return [
-            'patient_id'   => User::factory(),
-            'doctor_id'    => Doctor::factory(),
-            'service_id'   => Service::factory(),
-            'slot_id'      => ScheduleSlot::factory(),
-            'status'       => AppointmentStatus::Pending,
-            'notes'        => null,
+            'patient_id' => User::factory(),
+            'doctor_id' => Doctor::factory(),
+            'service_id' => Service::factory(),
+            'slot_id' => ScheduleSlot::factory(),
+            'status' => AppointmentStatus::Pending,
+            'notes' => null,
             'doctor_notes' => null,
         ];
     }

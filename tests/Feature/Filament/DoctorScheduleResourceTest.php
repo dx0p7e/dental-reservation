@@ -31,12 +31,12 @@ test('can create a schedule slot', function (): void {
 
     Livewire::test(CreateDoctorSchedule::class)
         ->fillForm([
-            'doctor_id'             => $doctor->id,
-            'day_of_week'           => 1,
-            'start_time'            => '09:00',
-            'end_time'              => '17:00',
+            'doctor_id' => $doctor->id,
+            'day_of_week' => 1,
+            'start_time' => '09:00',
+            'end_time' => '17:00',
             'slot_duration_minutes' => 30,
-            'is_active'             => true,
+            'is_active' => true,
         ])
         ->call('create')
         ->assertHasNoFormErrors();
@@ -66,20 +66,20 @@ test('overlapping slot on create is blocked', function (): void {
     $doctor = Doctor::factory()->create();
 
     DoctorSchedule::factory()->create([
-        'doctor_id'   => $doctor->id,
+        'doctor_id' => $doctor->id,
         'day_of_week' => 2,
-        'start_time'  => '09:00',
-        'end_time'    => '12:00',
+        'start_time' => '09:00',
+        'end_time' => '12:00',
     ]);
 
     Livewire::test(CreateDoctorSchedule::class)
         ->fillForm([
-            'doctor_id'             => $doctor->id,
-            'day_of_week'           => 2,
-            'start_time'            => '11:00',
-            'end_time'              => '14:00',
+            'doctor_id' => $doctor->id,
+            'day_of_week' => 2,
+            'start_time' => '11:00',
+            'end_time' => '14:00',
             'slot_duration_minutes' => 30,
-            'is_active'             => true,
+            'is_active' => true,
         ])
         ->call('create');
 
@@ -90,20 +90,20 @@ test('non-overlapping slots on different days are allowed', function (): void {
     $doctor = Doctor::factory()->create();
 
     DoctorSchedule::factory()->create([
-        'doctor_id'   => $doctor->id,
+        'doctor_id' => $doctor->id,
         'day_of_week' => 1,
-        'start_time'  => '09:00',
-        'end_time'    => '17:00',
+        'start_time' => '09:00',
+        'end_time' => '17:00',
     ]);
 
     Livewire::test(CreateDoctorSchedule::class)
         ->fillForm([
-            'doctor_id'             => $doctor->id,
-            'day_of_week'           => 2,
-            'start_time'            => '09:00',
-            'end_time'              => '17:00',
+            'doctor_id' => $doctor->id,
+            'day_of_week' => 2,
+            'start_time' => '09:00',
+            'end_time' => '17:00',
             'slot_duration_minutes' => 30,
-            'is_active'             => true,
+            'is_active' => true,
         ])
         ->call('create')
         ->assertHasNoFormErrors();

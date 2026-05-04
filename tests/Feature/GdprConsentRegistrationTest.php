@@ -9,9 +9,9 @@ beforeEach(function (): void {
 
 test('registration requires gdpr consent', function (): void {
     $response = $this->postJson('/api/v1/auth/register', [
-        'name'                  => 'Test User',
-        'email'                 => 'test@example.com',
-        'password'              => 'Password123!',
+        'name' => 'Test User',
+        'email' => 'test@example.com',
+        'password' => 'Password123!',
         'password_confirmation' => 'Password123!',
     ]);
 
@@ -21,11 +21,11 @@ test('registration requires gdpr consent', function (): void {
 
 test('registration with gdpr consent records timestamp', function (): void {
     $response = $this->postJson('/api/v1/auth/register', [
-        'name'                  => 'Test User',
-        'email'                 => 'test@example.com',
-        'password'              => 'Password123!',
+        'name' => 'Test User',
+        'email' => 'test@example.com',
+        'password' => 'Password123!',
         'password_confirmation' => 'Password123!',
-        'gdpr_consent'          => true,
+        'gdpr_consent' => true,
     ]);
 
     $response->assertCreated();
@@ -36,11 +36,11 @@ test('registration with gdpr consent records timestamp', function (): void {
 
 test('registration with gdpr consent false is rejected', function (): void {
     $response = $this->postJson('/api/v1/auth/register', [
-        'name'                  => 'Test User',
-        'email'                 => 'test@example.com',
-        'password'              => 'Password123!',
+        'name' => 'Test User',
+        'email' => 'test@example.com',
+        'password' => 'Password123!',
         'password_confirmation' => 'Password123!',
-        'gdpr_consent'          => false,
+        'gdpr_consent' => false,
     ]);
 
     $response->assertStatus(422)
