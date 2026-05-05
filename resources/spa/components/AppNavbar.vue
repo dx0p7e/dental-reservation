@@ -39,7 +39,8 @@ const publicLinks = [
 function scrollToSection(anchorId: string) {
   const el = document.getElementById(anchorId)
   if (el) {
-    el.scrollIntoView({ behavior: 'smooth' })
+    const top = el.getBoundingClientRect().top + window.scrollY
+    window.scrollTo({ top, behavior: 'smooth' })
   }
 }
 
