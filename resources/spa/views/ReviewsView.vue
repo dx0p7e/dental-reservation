@@ -60,7 +60,7 @@ onMounted(() => {
       <div class="mb-8 flex items-center justify-end">
         <button
           v-if="canReview"
-          class="rounded-lg bg-clinic-teal px-5 py-2 font-semibold text-white transition-opacity hover:opacity-90"
+          class="rounded-lg bg-clinic-blue px-5 py-2 font-semibold text-white transition-opacity hover:opacity-90"
           @click="showForm = true"
         >
           Palikti atsiliepimą
