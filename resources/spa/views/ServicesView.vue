@@ -35,11 +35,11 @@ onMounted(() => {
     <AppNavbar />
 
     <!-- Hero header -->
-    <section class="bg-teal-50 px-6 py-16 text-center">
+    <section class="bg-clinic-dark px-6 py-16 text-center">
       <div class="mx-auto max-w-3xl">
-        <h1 class="text-4xl font-semibold tracking-tight text-clinic-text">{{ t('services.title') }}</h1>
-        <p class="mt-3 text-lg text-clinic-muted">{{ t('services.subtitle', { clinic: t('app.clinicName') }) }}</p>
-        <p class="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-clinic-muted">
+        <h1 class="text-4xl font-semibold tracking-tight text-white">{{ t('services.title') }}</h1>
+        <p class="mt-3 text-lg text-white/70">{{ t('services.subtitle', { clinic: t('app.clinicName') }) }}</p>
+        <p class="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-white/60">
           {{ t('services.description') }}
         </p>
       </div>

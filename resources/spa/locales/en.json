@@ -91,6 +91,7 @@
   "doctors.book": "Book",
   "doctors.loading": "Loading doctors…",
   "doctors.empty": "No doctors available.",
+  "doctors.subtitle": "Professional specialists ready to take care of your smile",
 
   "slots.title": "Available slots",
   "slots.loading": "Loading slots…",
@@ -296,5 +297,8 @@
   "footer.doctors": "Doctors",
   "footer.loyalty": "Loyalty",
   "footer.login": "Log In",
-  "footer.rightsReserved": "All rights reserved"
+  "footer.rightsReserved": "All rights reserved",
+
+  "reviews.title": "Patient Reviews",
+  "reviews.subtitle": "What our patients say about us"
 }

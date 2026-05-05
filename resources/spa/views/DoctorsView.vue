@@ -63,12 +63,21 @@ function viewSlots(doctor: Doctor) {
   <div class="min-h-screen bg-clinic-surface">
     <AppNavbar />
 
+     <section class="bg-clinic-dark px-6 py-16 text-center">
+      <div class="mx-auto max-w-3xl">
+        <h1 class="text-4xl font-semibold tracking-tight text-white">{{ t('doctors.title') }}</h1>
+        <p class="mt-3 text-lg text-white/70">{{ t('doctors.subtitle') }}</p>
+      </div>
+    </section>
+
     <main class="mx-auto max-w-6xl px-6 py-10">
       <PageHeader :title="t('doctors.title')">
         <template #description>
           {{ t('slots.selectService') }}
         </template>
       </PageHeader>
+
+      
 
       <div v-if="loading" class="mt-10 text-sm text-clinic-muted">{{ t('doctors.loading') }}</div>
 

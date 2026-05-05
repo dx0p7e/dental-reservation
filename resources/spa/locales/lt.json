@@ -84,6 +84,7 @@
   "doctors.book": "Rezervuoti",
   "doctors.loading": "Kraunami gydytojai…",
   "doctors.empty": "Gydytojų nerasta.",
+  "doctors.subtitle": "Profesionalūs specialistai, pasiruošę pasirūpinti jūsų šypsena",
   "slots.title": "Laisvi laikai",
   "slots.loading": "Kraunami laikai…",
   "slots.empty": "Šiam laikotarpiui laisvų laikų nėra.",
@@ -278,5 +279,8 @@
   "footer.loyalty": "Lojalumas",
   "footer.login": "Prisijungti",
   "footer.contact": "Kontaktai",
-  "footer.rightsReserved": "Visos teisės saugomos"
+  "footer.rightsReserved": "Visos teisės saugomos",
+
+  "reviews.title": "Pacientų atsiliepimai",
+  "reviews.subtitle": "Ką mūsų pacientai sako apie mus"
 }

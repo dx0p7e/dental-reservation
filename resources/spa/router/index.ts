@@ -3,6 +3,7 @@ import { useAuthStore } from '@spa/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(),
+  scrollBehavior: () => ({ top: 0 }),
   routes: [
     { path: '/',                  component: () => import('@spa/views/LandingView.vue') },
     { path: '/login',             component: () => import('@spa/views/LoginView.vue') },

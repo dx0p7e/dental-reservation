@@ -7,12 +7,14 @@ import ReviewCard from '@spa/components/ReviewCard.vue'
 import ReviewForm from '@spa/components/ReviewForm.vue'
 import { useAuthStore } from '@spa/stores/auth'
 import type { Review } from '@spa/types'
+import { useI18n } from 'vue-i18n'
 
 const authStore = useAuthStore()
 const reviews = ref<Review[]>([])
 const loading = ref(true)
 const showForm = ref(false)
 const hasReviewed = ref(false)
+const { t } = useI18n()
 
 const canReview = computed(
   () => authStore.isAuthenticated && !hasReviewed.value,
@@ -46,10 +48,10 @@ onMounted(() => {
   <div class="min-h-screen bg-clinic-surface">
     <AppNavbar />
 
-    <section class="bg-teal-50 px-6 py-16 text-center">
+     <section class="bg-clinic-dark px-6 py-16 text-center">
       <div class="mx-auto max-w-3xl">
-        <h1 class="text-4xl font-semibold tracking-tight text-clinic-text">Atsiliepimai</h1>
-        <p class="mt-3 text-lg text-clinic-muted">Ką mūsų pacientai sako apie kliniką</p>
+        <h1 class="text-4xl font-semibold tracking-tight text-white">{{ t('reviews.title') }}</h1>
+        <p class="mt-3 text-lg text-white/70">{{ t('reviews.subtitle') }}</p>
       </div>
     </section>
 
