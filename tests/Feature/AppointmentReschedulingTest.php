@@ -24,7 +24,7 @@ function makePatientWithAppointment(AppointmentStatus $status = AppointmentStatu
     $patient->assignRole('patient');
 
     $doctor = Doctor::factory()->create();
-    $service = Service::factory()->create();
+    $service = Service::factory()->create(['duration_minutes' => 30]);
     $oldSlot = ScheduleSlot::factory()->create(['doctor_id' => $doctor->id, 'is_booked' => true]);
     $newSlot = ScheduleSlot::factory()->create(['doctor_id' => $doctor->id, 'is_booked' => false]);
 

@@ -161,7 +161,7 @@ onUnmounted(() => {
 
           <div
             v-if="dropdownOpen"
-            class="absolute right-0 mt-2 w-48 rounded-lg border border-white/10 bg-clinic-dark py-1 shadow-lg"
+            class="absolute right-0 mt-2 w-48 rounded-lg border border-white/10 bg-clinic-dark py-1 shadow-lg z-99"
           >
             <RouterLink
               to="/doctors"

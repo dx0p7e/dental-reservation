@@ -8,6 +8,7 @@ use App\Models\Doctor;
 use App\Models\LoyaltyTier;
 use App\Models\ScheduleSlot;
 use App\Models\Service;
+use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
@@ -74,7 +75,17 @@ class ConfirmAppointmentRequestAction
                         'final_price' => $finalPrice,
                     ]);
 
-                    ScheduleSlot::find($data['slot_id'])?->update(['is_booked' => true]);
+                    $startSlot = ScheduleSlot::find($data['slot_id']);
+                    if ($startSlot !== null) {
+                        $endTime = Carbon::parse($startSlot->date->format('Y-m-d').' '.$startSlot->start_time)
+                            ->addMinutes($service->duration_minutes);
+
+                        ScheduleSlot::where('doctor_id', $startSlot->doctor_id)
+                            ->whereDate('date', $startSlot->date)
+                            ->where('start_time', '>=', $startSlot->start_time)
+                            ->where('start_time', '<', $endTime->format('H:i'))
+                            ->update(['is_booked' => true]);
+                    }
                 });
 
                 Notification::make()

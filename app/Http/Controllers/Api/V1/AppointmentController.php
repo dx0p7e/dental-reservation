@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Enums\AppointmentStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\StoreAppointmentRequest;
+use Carbon\Carbon;
 use App\Http\Requests\Api\V1\StoreAppointmentRequestRequest;
 use App\Http\Resources\Api\V1\AppointmentResource;
 use App\Models\Appointment;
@@ -44,22 +45,49 @@ class AppointmentController extends Controller
             return response()->json(['message' => 'El. paštas ir telefono numeris turi būti patvirtinti prieš rezervuojant.'], 403);
         }
 
+        $hasActiveAppointment = $user->appointments()
+            ->whereIn('status', [AppointmentStatus::Pending, AppointmentStatus::Confirmed])
+            ->exists();
+
+        if ($hasActiveAppointment) {
+            return response()->json(['message' => 'Jau turite aktyvų vizitą. Prieš rezervuojant naują, atlikite esamą.'], 422);
+        }
+
         $appointment = DB::transaction(function () use ($request) {
-            $slot = ScheduleSlot::where('id', $request->slot_id)
+            $startSlot = ScheduleSlot::where('id', $request->slot_id)
                 ->where('is_booked', false)
                 ->lockForUpdate()
                 ->firstOrFail();
 
-            $slot->update(['is_booked' => true]);
-
             $service = Service::findOrFail($request->service_id);
+            $endTime = Carbon::parse($startSlot->date->format('Y-m-d').' '.$startSlot->start_time)
+                ->addMinutes($service->duration_minutes);
+
+            $slotsToBook = ScheduleSlot::where('doctor_id', $startSlot->doctor_id)
+                ->whereDate('date', $startSlot->date)
+                ->where('start_time', '>=', $startSlot->start_time)
+                ->where('start_time', '<', $endTime->format('H:i'))
+                ->orderBy('start_time')
+                ->lockForUpdate()
+                ->get();
+
+            $coveredMinutes = $slotsToBook->sum(
+                fn (ScheduleSlot $s): int => (int) Carbon::parse($s->start_time)->diffInMinutes(Carbon::parse($s->end_time)),
+            );
+
+            if ($slotsToBook->contains('is_booked', true) || $coveredMinutes < $service->duration_minutes) {
+                abort(422, 'Nepakanka iš eilės einančių laisvų laiko tarpsnių šiai paslaugai.');
+            }
+
+            ScheduleSlot::whereIn('id', $slotsToBook->pluck('id'))->update(['is_booked' => true]);
+
             $result = $this->pricingService->calculate($request->user(), $service);
 
             return Appointment::create([
                 'patient_id' => $request->user()->id,
                 'doctor_id' => $request->doctor_id,
                 'service_id' => $request->service_id,
-                'slot_id' => $slot->id,
+                'slot_id' => $startSlot->id,
                 'status' => $request->user()->smart_id_verified_at
                     ? AppointmentStatus::Confirmed
                     : AppointmentStatus::Pending,
@@ -119,7 +147,26 @@ class AppointmentController extends Controller
             return response()->json(['message' => 'This appointment cannot be cancelled.'], 422);
         }
 
-        $appointment->update(['status' => AppointmentStatus::Cancelled]);
+        DB::transaction(function () use ($appointment): void {
+            if ($appointment->slot_id !== null) {
+                $appointment->loadMissing(['slot', 'service']);
+                $slot = $appointment->slot;
+                $service = $appointment->service;
+
+                if ($slot !== null && $service !== null) {
+                    $endTime = Carbon::parse($slot->date->format('Y-m-d').' '.$slot->start_time)
+                        ->addMinutes($service->duration_minutes);
+
+                    ScheduleSlot::where('doctor_id', $slot->doctor_id)
+                        ->whereDate('date', $slot->date)
+                        ->where('start_time', '>=', $slot->start_time)
+                        ->where('start_time', '<', $endTime->format('H:i'))
+                        ->update(['is_booked' => false]);
+                }
+            }
+
+            $appointment->update(['status' => AppointmentStatus::Cancelled]);
+        });
 
         return response()->json(null, 204);
     }
@@ -178,19 +225,45 @@ class AppointmentController extends Controller
             return response()->json(['message' => 'The selected slot is no longer available.'], 422);
         }
 
-        DB::transaction(function () use ($appointment, $newSlot): void {
-            $lockedNewSlot = ScheduleSlot::where('id', $newSlot->id)
-                ->where('is_booked', false)
+        $appointment->loadMissing('service');
+        $service = $appointment->service;
+        assert($service !== null);
+
+        DB::transaction(function () use ($appointment, $newSlot, $service): void {
+            $newEndTime = Carbon::parse($newSlot->date->format('Y-m-d').' '.$newSlot->start_time)
+                ->addMinutes($service->duration_minutes);
+
+            $newSlots = ScheduleSlot::where('doctor_id', $newSlot->doctor_id)
+                ->whereDate('date', $newSlot->date)
+                ->where('start_time', '>=', $newSlot->start_time)
+                ->where('start_time', '<', $newEndTime->format('H:i'))
+                ->orderBy('start_time')
                 ->lockForUpdate()
-                ->firstOrFail();
+                ->get();
+
+            $coveredMinutes = $newSlots->sum(
+                fn (ScheduleSlot $s): int => (int) Carbon::parse($s->start_time)->diffInMinutes(Carbon::parse($s->end_time)),
+            );
+
+            if ($newSlots->contains('is_booked', true) || $coveredMinutes < $service->duration_minutes) {
+                abort(422, 'The selected slot is no longer available.');
+            }
 
             $oldSlot = ScheduleSlot::where('id', $appointment->slot_id)
                 ->lockForUpdate()
                 ->firstOrFail();
 
-            $oldSlot->update(['is_booked' => false]);
-            $lockedNewSlot->update(['is_booked' => true]);
-            $appointment->update(['slot_id' => $lockedNewSlot->id, 'rescheduled_at' => now()]);
+            $oldEndTime = Carbon::parse($oldSlot->date->format('Y-m-d').' '.$oldSlot->start_time)
+                ->addMinutes($service->duration_minutes);
+
+            ScheduleSlot::where('doctor_id', $oldSlot->doctor_id)
+                ->whereDate('date', $oldSlot->date)
+                ->where('start_time', '>=', $oldSlot->start_time)
+                ->where('start_time', '<', $oldEndTime->format('H:i'))
+                ->update(['is_booked' => false]);
+
+            ScheduleSlot::whereIn('id', $newSlots->pluck('id'))->update(['is_booked' => true]);
+            $appointment->update(['slot_id' => $newSlots->first()->id, 'rescheduled_at' => now()]);
         });
 
         $appointment->load(['doctor.user', 'service', 'slot', 'patient']);
