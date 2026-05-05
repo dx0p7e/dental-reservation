@@ -36,6 +36,13 @@ const publicLinks = [
   { labelKey: 'nav.reviews', to: '/reviews', anchorId: 'testimonials' },
 ]
 
+function scrollToSection(anchorId: string) {
+  const el = document.getElementById(anchorId)
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth' })
+  }
+}
+
 function setLocale(lang: string) {
   locale.value = lang
   localStorage.setItem('locale', lang)
@@ -94,9 +101,9 @@ onUnmounted(() => {
       <div class="hidden items-center gap-6 md:flex">
         <template v-for="link in publicLinks" :key="link.to">
           <!-- Smooth-scroll anchor on landing page (only for links with anchorId) -->
-          <a
+          <button
             v-if="isLanding && link.anchorId !== null"
-            :href="'#' + link.anchorId"
+            @click="scrollToSection(link.anchorId)"
             :class="[
               'text-sm font-medium tracking-wide transition-colors',
               isActive(link)
@@ -105,7 +112,7 @@ onUnmounted(() => {
             ]"
           >
             {{ t(link.labelKey) }}
-          </a>
+          </button>
           <!-- Router link on other pages (or landing links without anchorId) -->
           <RouterLink
             v-else
@@ -207,12 +214,21 @@ onUnmounted(() => {
     <!-- Continue booking banner strip -->
     <div
       v-if="authStore.isAuthenticated && bookingStore.bookingDraftState !== null"
-      class="border-t border-clinic-teal/20 bg-clinic-teal/10 py-2 text-center text-sm"
+      class="relative border-t border-clinic-teal/20 bg-clinic-teal/10 py-2 text-center text-sm"
     >
       <span class="text-white/70">{{ t('nav.continueBookingBanner') }}</span>
       <RouterLink :to="continueBookingRoute" class="font-medium text-clinic-teal hover:underline">
         {{ t('nav.continueBooking') }} &rarr;
       </RouterLink>
+      <button
+        @click="bookingStore.clearDraft()"
+        class="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white"
+        aria-label="Dismiss"
+      >
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
     </div>
   </nav>
   <!-- Spacer so page content isn't hidden behind the fixed navbar on non-hero pages -->

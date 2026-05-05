@@ -141,7 +141,7 @@ const loyaltyTiers = [
       </p>
       <div class="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-4">
         <RouterLink
-          to="/dashboard/book"
+          to="/doctors"
           class="rounded-lg bg-clinic-teal px-7 py-3 text-sm font-medium text-white hover:opacity-90"
         >
           {{ t('landing.hero.cta') }}
