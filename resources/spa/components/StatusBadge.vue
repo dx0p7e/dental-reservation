@@ -1,7 +1,11 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
 defineProps<{
   status: string
 }>()
+
+const { t } = useI18n()
 
 const colourMap: Record<string, string> = {
   pending:   'bg-yellow-100 text-yellow-800',
@@ -11,20 +15,12 @@ const colourMap: Record<string, string> = {
   no_show:   'bg-gray-100 text-gray-600',
 }
 
-const labelMap: Record<string, string> = {
-  pending:   'Pending',
-  confirmed: 'Confirmed',
-  completed: 'Completed',
-  cancelled: 'Cancelled',
-  no_show:   'No Show',
-}
-
 function classes(status: string): string {
   return colourMap[status] ?? 'bg-gray-100 text-gray-600'
 }
 
 function label(status: string): string {
-  return labelMap[status] ?? status
+  return t(`appointments.status.${status}`, status)
 }
 </script>
 

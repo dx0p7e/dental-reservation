@@ -126,6 +126,7 @@
   "appointments.status.confirmed": "Patvirtinta",
   "appointments.status.cancelled": "Atšaukta",
   "appointments.status.completed": "Atlikta",
+  "appointments.status.no_show": "Neatvyko",
   "appointments.cancel": "Atšaukti",
   "appointments.cancelling": "Atšaukiama…",
   "appointments.reschedule": "Pakeisti laiką",

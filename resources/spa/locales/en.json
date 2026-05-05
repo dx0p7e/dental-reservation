@@ -139,6 +139,7 @@
   "appointments.status.confirmed": "Confirmed",
   "appointments.status.cancelled": "Cancelled",
   "appointments.status.completed": "Completed",
+  "appointments.status.no_show": "No Show",
   "appointments.cancel": "Cancel",
   "appointments.cancelling": "Cancelling…",
   "appointments.reschedule": "Reschedule",
