@@ -4,6 +4,10 @@
 
 @import 'tw-animate-css';
 
+html {
+    scroll-behavior: smooth;
+}
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
