@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import api from '@spa/api/axios'
 import AppNavbar from '@spa/components/AppNavbar.vue'
 import { useAuthStore } from '@spa/stores/auth'
 
@@ -9,11 +10,27 @@ const authStore = useAuthStore()
 
 const ctaLink = computed(() => (authStore.isAuthenticated ? '/dashboard/loyalty' : '/register'))
 
-const tiers = [
-  { key: 'standard', points: 0, discount: 0, classes: 'border-gray-200 bg-gray-50', badgeClasses: 'bg-gray-100 text-gray-600' },
-  { key: 'silver', points: 500, discount: 10, classes: 'border-slate-300 bg-slate-50', badgeClasses: 'bg-slate-100 text-slate-700' },
-  { key: 'gold', points: 1500, discount: 20, classes: 'border-amber-300 bg-amber-50', badgeClasses: 'bg-amber-100 text-amber-700' },
-]
+interface TierData {
+  tier: string
+  points_threshold: number
+  discount_bonus_pct: number
+  color: string
+}
+
+const tiers = ref<TierData[]>([
+  { tier: 'standard', points_threshold: 0,    discount_bonus_pct: 0,  color: '#6b7280' },
+  { tier: 'silver',   points_threshold: 500,  discount_bonus_pct: 5,  color: '#94a3b8' },
+  { tier: 'gold',     points_threshold: 1500, discount_bonus_pct: 10, color: '#f59e0b' },
+])
+
+onMounted(async () => {
+  try {
+    const { data } = await api.get('/tiers')
+    tiers.value = (data.data ?? data) as TierData[]
+  } catch {
+    // fallback to defaults already set
+  }
+})
 
 const steps = [
   { num: 1, labelKey: 'loyaltyMarketing.step1.label', descKey: 'loyaltyMarketing.step1.desc' },
@@ -74,17 +91,21 @@ const steps = [
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <div
             v-for="tier in tiers"
-            :key="tier.name"
-            :class="['rounded-lg border-2 p-6 text-center', tier.classes]"
+            :key="tier.tier"
+            class="rounded-lg border-2 p-6 text-center bg-white"
+            :style="{ borderColor: tier.color }"
           >
-            <span :class="['inline-block rounded-full px-4 py-1 text-sm font-semibold', tier.badgeClasses]">
-              {{ t(`loyaltyMarketing.tiers.${tier.key}`) }}
+            <span
+              class="inline-block rounded-full px-4 py-1 text-sm font-semibold text-white"
+              :style="{ backgroundColor: tier.color }"
+            >
+              {{ t(`loyaltyMarketing.tiers.${tier.tier}`) }}
             </span>
             <p class="mt-4 text-2xl font-bold text-clinic-text">
-              {{ tier.points === 0 ? t('loyaltyMarketing.standard.points') : t('loyaltyMarketing.tier.points', { points: tier.points }) }}
+              {{ tier.points_threshold === 0 ? t('loyaltyMarketing.standard.points') : t('loyaltyMarketing.tier.points', { points: tier.points_threshold }) }}
             </p>
             <p class="mt-2 text-sm text-clinic-muted">
-              {{ tier.discount === 0 ? t('loyaltyMarketing.standard.benefit') : t('loyaltyMarketing.tier.discount', { discount: tier.discount }) }}
+              {{ tier.discount_bonus_pct === 0 ? t('loyaltyMarketing.standard.benefit') : t('loyaltyMarketing.tier.discount', { discount: tier.discount_bonus_pct }) }}
             </p>
           </div>
         </div>

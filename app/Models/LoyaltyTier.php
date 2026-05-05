@@ -15,6 +15,7 @@ class LoyaltyTier extends Model
         'tier',
         'points_threshold',
         'discount_bonus_pct',
+        'color',
     ];
 
     protected $casts = [

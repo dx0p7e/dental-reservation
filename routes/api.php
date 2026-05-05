@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\ContactController as V1ContactController;
 use App\Http\Controllers\Api\V1\DoctorController as V1DoctorController;
 use App\Http\Controllers\Api\V1\EmailVerificationController as V1EmailVerificationController;
 use App\Http\Controllers\Api\V1\LoyaltyController as V1LoyaltyController;
+use App\Http\Controllers\Api\V1\LoyaltyTierController as V1LoyaltyTierController;
 use App\Http\Controllers\Api\V1\PhoneVerificationController as V1PhoneVerificationController;
 use App\Http\Controllers\Api\V1\ProfileController as V1ProfileController;
 use App\Http\Controllers\Api\V1\ReviewController as V1ReviewController;
@@ -39,6 +40,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::get('doctors/{doctor}/services', [V1DoctorController::class, 'services'])->name('doctors.services.index');
     Route::get('doctors/{doctor}/slots', [V1SlotController::class, 'index'])->name('doctors.slots.index');
     Route::get('services', [V1ServiceController::class, 'index'])->name('services.index');
+    Route::get('tiers', [V1LoyaltyTierController::class, 'index'])->name('tiers.index');
     Route::get('reviews', [V1ReviewController::class, 'index'])->name('reviews.index');
     Route::post('contact', [V1ContactController::class, 'store'])->middleware('throttle:5,1')->name('contact.store');
 

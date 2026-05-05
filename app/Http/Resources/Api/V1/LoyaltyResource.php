@@ -15,6 +15,7 @@ class LoyaltyResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $current = LoyaltyTier::where('tier', $this->tier)->first();
         $next = LoyaltyTier::where('points_threshold', '>', $this->points_balance)
             ->orderBy('points_threshold')
             ->first();
@@ -22,6 +23,7 @@ class LoyaltyResource extends JsonResource
         return [
             'points_balance' => $this->points_balance,
             'tier' => $this->tier,
+            'tier_color' => $current?->color ?? '#6b7280',
             'next_tier' => $next?->tier,
             'points_to_next_tier' => $next ? $next->points_threshold - $this->points_balance : null,
             'transactions' => $this->whenLoaded('transactions', fn () => $this->transactions->map(fn ($tx) => [

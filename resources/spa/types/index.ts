@@ -55,6 +55,7 @@ export interface LoyaltyTransaction {
 export interface LoyaltyAccount {
   points_balance: number
   tier: string
+  tier_color: string
   next_tier: string | null
   points_to_next_tier: number | null
   transactions?: LoyaltyTransaction[]

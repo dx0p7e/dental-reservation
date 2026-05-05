@@ -22,6 +22,15 @@ const hasMoreServices = ref(false)
 const reviews = ref<Review[]>([])
 const loadingReviews = ref(true)
 
+interface LoyaltyTierPreview {
+  tier: string
+  points_threshold: number
+  discount_bonus_pct: number
+  color: string
+}
+
+const loyaltyTiers = ref<LoyaltyTierPreview[]>([])
+
 interface ContactForm {
   name: string
   email: string
@@ -80,6 +89,17 @@ onMounted(async () => {
   fetchServices()
 
   try {
+    const { data } = await api.get('/tiers')
+    loyaltyTiers.value = (data.data ?? data) as LoyaltyTierPreview[]
+  } catch {
+    loyaltyTiers.value = [
+      { tier: 'standard', points_threshold: 0,    discount_bonus_pct: 0,  color: '#6b7280' },
+      { tier: 'silver',   points_threshold: 500,  discount_bonus_pct: 5,  color: '#94a3b8' },
+      { tier: 'gold',     points_threshold: 1500, discount_bonus_pct: 10, color: '#f59e0b' },
+    ]
+  }
+
+  try {
     const { data } = await api.get('/doctors')
     doctors.value = data.data ?? data
   } finally {
@@ -112,12 +132,6 @@ const steps = [
   { num: 1, labelKey: 'landing.steps.1' },
   { num: 2, labelKey: 'landing.steps.2' },
   { num: 3, labelKey: 'landing.steps.3' },
-]
-
-const loyaltyTiers = [
-  { name: 'Standard', points: 0, discount: 0, highlighted: false },
-  { name: 'Silver', points: 500, discount: 10, highlighted: false },
-  { name: 'Gold', points: 1500, discount: 20, highlighted: true },
 ]
 </script>
 
@@ -229,17 +243,17 @@ const loyaltyTiers = [
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <div
             v-for="tier in loyaltyTiers"
-            :key="tier.name"
-            class="rounded-xl border p-8 transition-shadow hover:shadow-md"
-            :class="tier.highlighted ? 'border-clinic-teal bg-white shadow-sm' : 'border-clinic-border bg-white'"
+            :key="tier.tier"
+            class="rounded-xl border bg-white p-8 transition-shadow hover:shadow-md"
+            :style="{ borderColor: tier.color }"
           >
-            <p
-              class="mb-1 text-lg font-bold"
-              :class="tier.highlighted ? 'text-clinic-teal' : 'text-clinic-text'"
-            >{{ tier.name }}</p>
-            <p class="text-sm text-clinic-muted">{{ tier.points }}+ {{ t('landing.loyalty.points') }}</p>
-            <p class="mt-3 text-2xl font-semibold" :class="tier.highlighted ? 'text-clinic-teal' : 'text-clinic-text'">
-              {{ tier.discount }}%
+            <span
+              class="mb-3 inline-block rounded-full px-3 py-0.5 text-xs font-semibold uppercase tracking-wide text-white"
+              :style="{ backgroundColor: tier.color }"
+            >{{ tier.tier }}</span>
+            <p class="text-sm text-clinic-muted">{{ tier.points_threshold }}+ {{ t('landing.loyalty.points') }}</p>
+            <p class="mt-3 text-2xl font-semibold" :style="{ color: tier.color }">
+              {{ tier.discount_bonus_pct }}%
             </p>
             <p class="text-xs text-clinic-muted">{{ t('landing.loyalty.discountLabel') }}</p>
           </div>

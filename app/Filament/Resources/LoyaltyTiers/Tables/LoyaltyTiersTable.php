@@ -5,6 +5,7 @@ namespace App\Filament\Resources\LoyaltyTiers\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\ColorColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -31,6 +32,8 @@ class LoyaltyTiersTable
                     ->numeric()
                     ->suffix('%')
                     ->sortable(),
+                ColorColumn::make('color')
+                    ->sortable(false),
             ])
             ->filters([
                 //

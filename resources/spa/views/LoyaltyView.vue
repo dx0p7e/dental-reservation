@@ -17,13 +17,6 @@ onMounted(async () => {
   }
 })
 
-const tierClasses: Record<string, string> = {
-  bronze:   'bg-amber-100 text-amber-700',
-  silver:   'bg-slate-100 text-slate-700',
-  gold:     'bg-amber-100 text-amber-800',
-  platinum: 'bg-slate-100 text-slate-800',
-}
-
 const progressPercent = computed(() => {
   if (!loyalty.value || loyalty.value.next_tier === null || loyalty.value.points_to_next_tier === null) {
     return 100
@@ -52,7 +45,8 @@ const progressPercent = computed(() => {
         <!-- Status card -->
         <div class="rounded-lg border border-clinic-border bg-white p-8 text-center">
           <span
-            :class="['inline-block rounded-full px-4 py-1 text-sm font-semibold capitalize mb-4', tierClasses[loyalty.tier.toLowerCase()] ?? 'bg-gray-100 text-gray-700']"
+            class="inline-block rounded-full px-4 py-1 text-sm font-semibold capitalize mb-4 text-white"
+            :style="{ backgroundColor: loyalty.tier_color ?? '#6b7280' }"
           >
             {{ loyalty.tier }}
           </span>
@@ -65,10 +59,10 @@ const progressPercent = computed(() => {
               <span>Progress to {{ loyalty.next_tier }}</span>
               <span>{{ loyalty.points_to_next_tier }} pts to go</span>
             </div>
-            <div class="h-2.5 w-full rounded-full bg-clinic-border">
+              <div class="h-2.5 rounded-full bg-clinic-border">
               <div
-                class="h-2.5 rounded-full bg-clinic-teal transition-all"
-                :style="{ width: progressPercent + '%' }"
+                class="h-2.5 rounded-full transition-all"
+                :style="{ width: progressPercent + '%', backgroundColor: loyalty.tier_color ?? '#6b7280' }"
               ></div>
             </div>
           </div>

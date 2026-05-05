@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LoyaltyTiers\Schemas;
 
+use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
@@ -29,6 +30,9 @@ class LoyaltyTierForm
                     ->minValue(0)
                     ->maxValue(100)
                     ->suffix('%'),
+                ColorPicker::make('color')
+                    ->required()
+                    ->default('#6b7280'),
             ]);
     }
 }

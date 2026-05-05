@@ -21,6 +21,7 @@ class LoyaltyTierFactory extends Factory
             'tier' => fake()->unique()->randomElement(['standard', 'silver', 'gold']),
             'points_threshold' => fake()->numberBetween(0, 1000),
             'discount_bonus_pct' => fake()->randomFloat(2, 0, 20),
+            'color' => fake()->randomElement(['#6b7280', '#94a3b8', '#f59e0b']),
         ];
     }
 }
