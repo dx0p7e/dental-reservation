@@ -39,7 +39,8 @@ const publicLinks = [
 function scrollToSection(anchorId: string) {
   const el = document.getElementById(anchorId)
   if (el) {
-    const top = el.getBoundingClientRect().top + window.scrollY
+    const navbarHeight = 80
+    const top = el.getBoundingClientRect().top + window.scrollY - navbarHeight
     window.scrollTo({ top, behavior: 'smooth' })
   }
 }
