@@ -8,6 +8,7 @@ use App\Models\Appointment;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 #[Signature('appointments:send-reminders')]
@@ -21,7 +22,11 @@ class SendAppointmentReminders extends Command
             ->where('appointments.status', AppointmentStatus::Confirmed)
             ->whereNull('appointments.reminder_sent_at')
             ->whereRaw(
-                "datetime(schedule_slots.date || ' ' || schedule_slots.start_time) BETWEEN datetime(?) AND datetime(?)",
+                match (DB::connection()->getDriverName()) {
+                    'pgsql'  => "(schedule_slots.date + schedule_slots.start_time)::timestamp BETWEEN ? AND ?",
+                    'mysql'  => "TIMESTAMP(schedule_slots.date, schedule_slots.start_time) BETWEEN ? AND ?",
+                    default  => "datetime(schedule_slots.date || ' ' || schedule_slots.start_time) BETWEEN datetime(?) AND datetime(?)",
+                },
                 [now()->addHours(23)->format('Y-m-d H:i:s'), now()->addHours(25)->format('Y-m-d H:i:s')]
             )
             ->select('appointments.*')

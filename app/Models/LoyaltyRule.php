@@ -36,6 +36,9 @@ class LoyaltyRule extends Model
                 if (DB::connection()->getDriverName() === 'sqlite') {
                     $q->whereNull('valid_months')
                         ->orWhereRaw("datetime(created_at, '+' || CAST(valid_months AS TEXT) || ' months') > CURRENT_TIMESTAMP");
+                } elseif (DB::connection()->getDriverName() === 'pgsql') {
+                    $q->whereNull('valid_months')
+                        ->orWhereRaw("created_at + (valid_months || ' months')::interval > NOW()");
                 } else {
                     $q->whereNull('valid_months')
                         ->orWhereRaw('DATE_ADD(created_at, INTERVAL valid_months MONTH) > NOW()');
