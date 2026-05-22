@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useActiveSection } from '@spa/composables/useActiveSection'
 import { useScrolled } from '@spa/composables/useScrolled'
 import { useAuthStore } from '@spa/stores/auth'
 import { useBookingStore } from '@spa/stores/booking'
 
 const route = useRoute()
+const router = useRouter()
 const { t, locale } = useI18n()
 const authStore = useAuthStore()
 const bookingStore = useBookingStore()
@@ -73,6 +74,7 @@ function closeDropdown() {
 async function handleLogout() {
   closeDropdown()
   await authStore.logout()
+  router.push('/')
 }
 
 function handleOutsideClick(event: MouseEvent) {
