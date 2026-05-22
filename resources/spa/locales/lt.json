@@ -259,7 +259,7 @@
   "contact.infoText": "Turite klausimų apie kliniką, teikiamas paslaugas ar kainas? Susisiekite su mumis — mielai atsakysime.",
   "contact.addressValue": "Klinikos g. 1, Vilnius",
   "contact.phoneValue": "+370 600 00000",
-  "contact.emailValue": "info@sypsenosklinika.lt",
+  "contact.emailValue": "info{'@'}sypsenosklinika.lt",
   "contact.hoursValue": "Pirm–Penkt 8:00–18:00",
   "contact.name": "Vardas",
   "contact.subject": "Tema",

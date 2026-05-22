@@ -275,7 +275,7 @@
   "contact.phone": "Phone",
   "contact.phoneValue": "+370 600 00000",
   "contact.email": "Email",
-  "contact.emailValue": "info@sypsenosklinika.lt",
+  "contact.emailValue": "info{'@'}sypsenosklinika.lt",
   "contact.hours": "Opening hours",
   "contact.hoursValue": "Mon–Fri 8:00–18:00",
   "contact.name": "Name",
